@@ -23,8 +23,8 @@ public class MJClass {
         this.superClass = s;
     }
 
-    public void addField(Symbol s) {
-        this.fields.add(s);
+    public void addField(String n, ValueType t) {
+        this.fields.add(new Symbol(n,t));
     }
 
     public void addMethod(Method m) {
@@ -43,8 +43,33 @@ public class MJClass {
         return this.fields;
     }
 
+    public Symbol getField(String symbolName) {
+        for (Symbol sym : fields) {
+            if (sym.getName().equals(symbolName)) {
+                return sym;
+            }
+        }
+        if (superClass != null) {
+            return superClass.getField(symbolName);
+        }
+        return null;
+    }
+
+
     public Set<Method> getMethods() {
         return this.methods;
+    }
+
+    public Method getMethod(String methodName) {
+        for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
+                return method;
+            }
+        }
+        if (superClass != null) {
+            return superClass.getMethod(methodName);
+        }
+        return null;
     }
 
     public String toString() {
@@ -53,7 +78,11 @@ public class MJClass {
         if (this.superClass != null) {
             msg += " extends " + this.superClass.getName();
         }
-        return msg += "\n";
+        msg += "\n";
+        for (Method m : methods) {
+            msg += m.toString() + "\n";
+        }
+        return msg;
     }
 
 

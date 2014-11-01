@@ -34,8 +34,8 @@ expression:	expression '&&' expression                                          
 		|	INT_LIT                                                                    # intLitExpr
 		|	'true'                                                                     # trueLitExpr
 		|	'false'                                                                    # falseLitExpr
-		|	IDENTIFIER                                                                 # idExpr
 		|	'this'                                                                     # thisExpr
+		|	IDENTIFIER                                                                 # idExpr
 		|	'new' 'int' '[' expression ']'                                             # newArrExpr
 		|	'new' IDENTIFIER '(' ')'                                                   # newObjExpr
 		|	'!' expression                                                             # negateExpr

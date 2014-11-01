@@ -28,10 +28,13 @@ public class TestRunner {
 
 		ParseTree tree = parser.goal();
 
-		System.out.println(tree.toStringTree(parser));
+		// TypeCheckingVisitor typeCheck = new TypeCheckingVisitor();
+		// typeCheck.visit(tree);
 
-//		TypeCheckingVisitor typeCheck = new TypeCheckingVisitor();
-//		typeCheck.visit(tree);
+        ResolveVisitor r = new ResolveVisitor();
+        r.visit(tree);
+
+        r.printClasses();
 
 
 	}

@@ -3,9 +3,11 @@ import java.util.HashSet;
 
 public class MainClass {
 
+    String name;
     private Set<MJClass> classes;
 
-    public MainClass() {
+    public MainClass(String n) {
+        this.name = n;
         this.classes = new HashSet<MJClass>(5);
     }
 
@@ -20,6 +22,14 @@ public class MainClass {
             }
         }
         return null;
+    }
+
+    public Set<MJClass> getClasses() {
+        return this.classes;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public String toString() {
