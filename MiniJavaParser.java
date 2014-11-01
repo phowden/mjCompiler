@@ -1224,33 +1224,33 @@ public class MiniJavaParser extends Parser {
 				break;
 			case 6:
 				{
-				_localctx = new IdExprContext(_localctx);
+				_localctx = new NewArrExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(160); match(IDENTIFIER);
+				setState(160); match(T__2);
+				setState(161); match(T__26);
+				setState(162); match(T__32);
+				setState(163); expression(0);
+				setState(164); match(T__36);
 				}
 				break;
 			case 7:
 				{
-				_localctx = new NewArrExprContext(_localctx);
+				_localctx = new NewObjExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(161); match(T__2);
-				setState(162); match(T__26);
-				setState(163); match(T__32);
-				setState(164); expression(0);
-				setState(165); match(T__36);
+				setState(166); match(T__2);
+				setState(167); match(IDENTIFIER);
+				setState(168); match(T__29);
+				setState(169); match(T__11);
 				}
 				break;
 			case 8:
 				{
-				_localctx = new NewObjExprContext(_localctx);
+				_localctx = new IdExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(167); match(T__2);
-				setState(168); match(IDENTIFIER);
-				setState(169); match(T__29);
-				setState(170); match(T__11);
+				setState(170); match(IDENTIFIER);
 				}
 				break;
 			case 9:
@@ -1475,14 +1475,14 @@ public class MiniJavaParser extends Parser {
 		"\u0099x\3\2\2\2\u0099\u0080\3\2\2\2\u0099\u0086\3\2\2\2\u0099\u008c\3"+
 		"\2\2\2\u0099\u0091\3\2\2\2\u009a\17\3\2\2\2\u009b\u009c\b\t\1\2\u009c"+
 		"\u009d\7\'\2\2\u009d\u00b2\5\20\t\4\u009e\u00b2\7)\2\2\u009f\u00b2\7\30"+
-		"\2\2\u00a0\u00b2\7\20\2\2\u00a1\u00b2\7$\2\2\u00a2\u00b2\7(\2\2\u00a3"+
-		"\u00a4\7%\2\2\u00a4\u00a5\7\r\2\2\u00a5\u00a6\7\7\2\2\u00a6\u00a7\5\20"+
-		"\t\2\u00a7\u00a8\7\3\2\2\u00a8\u00b2\3\2\2\2\u00a9\u00aa\7%\2\2\u00aa"+
-		"\u00ab\7(\2\2\u00ab\u00ac\7\n\2\2\u00ac\u00b2\7\34\2\2\u00ad\u00ae\7\n"+
+		"\2\2\u00a0\u00b2\7\20\2\2\u00a1\u00b2\7$\2\2\u00a2\u00a3\7%\2\2\u00a3"+
+		"\u00a4\7\r\2\2\u00a4\u00a5\7\7\2\2\u00a5\u00a6\5\20\t\2\u00a6\u00a7\7"+
+		"\3\2\2\u00a7\u00b2\3\2\2\2\u00a8\u00a9\7%\2\2\u00a9\u00aa\7(\2\2\u00aa"+
+		"\u00ab\7\n\2\2\u00ab\u00b2\7\34\2\2\u00ac\u00b2\7(\2\2\u00ad\u00ae\7\n"+
 		"\2\2\u00ae\u00af\5\20\t\2\u00af\u00b0\7\34\2\2\u00b0\u00b2\3\2\2\2\u00b1"+
 		"\u009b\3\2\2\2\u00b1\u009e\3\2\2\2\u00b1\u009f\3\2\2\2\u00b1\u00a0\3\2"+
-		"\2\2\u00b1\u00a1\3\2\2\2\u00b1\u00a2\3\2\2\2\u00b1\u00a3\3\2\2\2\u00b1"+
-		"\u00a9\3\2\2\2\u00b1\u00ad\3\2\2\2\u00b2\u00de\3\2\2\2\u00b3\u00b4\f\23"+
+		"\2\2\u00b1\u00a1\3\2\2\2\u00b1\u00a2\3\2\2\2\u00b1\u00a8\3\2\2\2\u00b1"+
+		"\u00ac\3\2\2\2\u00b1\u00ad\3\2\2\2\u00b2\u00de\3\2\2\2\u00b3\u00b4\f\23"+
 		"\2\2\u00b4\u00b5\7#\2\2\u00b5\u00dd\5\20\t\24\u00b6\u00b7\f\22\2\2\u00b7"+
 		"\u00b8\7\16\2\2\u00b8\u00dd\5\20\t\23\u00b9\u00ba\f\21\2\2\u00ba\u00bb"+
 		"\t\2\2\2\u00bb\u00dd\5\20\t\22\u00bc\u00bd\f\20\2\2\u00bd\u00be\7\t\2"+
