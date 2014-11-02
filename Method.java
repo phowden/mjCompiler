@@ -9,10 +9,10 @@ public class Method {
    private Set<Symbol> variables; 
    private ValueType returnType;
 
-   public Method(String n, List<Symbol> p, ValueType r) {
+   public Method(ValueType r, String n, List<Symbol> p) {
+       this.returnType = r;
        this.name = n;
        this.params = p;
-       this.returnType = r;
        this.variables = new HashSet<Symbol>();
    }
 

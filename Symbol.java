@@ -16,6 +16,10 @@ public class Symbol {
         return this.type;
     }
 
+    public String toString() {
+        return type.toString() + " " + name + ";";
+    }
+
 }
 
 

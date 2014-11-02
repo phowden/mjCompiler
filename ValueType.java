@@ -1,8 +1,8 @@
 public class ValueType {
 
-    public static final String INT_TYPE = "int";
-    public static final String INT_ARR_TYPE = "int[]";
-    public static final String BOOL_TYPE = "boolean";
+    public static final ValueType INT_TYPE = new ValueType("int");
+    public static final ValueType INT_ARR_TYPE = new ValueType("int[]");
+    public static final ValueType BOOL_TYPE = new ValueType("boolean");
     
     private final String type;
 
@@ -14,4 +14,25 @@ public class ValueType {
         return this.type;
     }
 
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        }
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof ValueType)) {
+            return false;
+        }
+        ValueType v = (ValueType)object;
+        return this.getType().equals(v.getType());
+    }
+
+    public int hashCode() {
+        return type.hashCode();
+    }
+
+    public String toString() {
+        return type;
+    }
 }

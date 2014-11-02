@@ -5,6 +5,7 @@ class example {
 }
 
 class C2 extends B2{
+    int this;
     int[] a;
     int [] b;
     int [ ] c;

@@ -3,43 +3,48 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-public class TypeCheckingVisitor<ValueType> extends MiniJavaBaseVisitor<ValueType> {
+public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
 
     private MainClass mainClass;
+    private MJClass currentMJClass;
+    private Method currentMethod;
 
     public TypeCheckingVisitor(MainClass mc) {
         this.mainClass = mc;
+        this.currentMJClass = null;
+        this.currentMethod = null;
     }
 
-    @Override public ValueType visitVarDecl(@NotNull MiniJavaParser.VarDeclContext ctx) {
-        super.visitVarDecl(ctx);
+    @Override public ValueType visitClassDecl(@NotNull MiniJavaParser.ClassDeclContext ctx) {
+        String className = ctx.IDENTIFIER().get(0).getText();
+        currentMJClass = mainClass.getClass(className);
+        visitChildren(ctx);
         return null;
     }
 
-    
+    @Override public ValueType visitMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx) {
+        String methodName = ctx.IDENTIFIER(0).getText();
+        currentMethod = currentMJClass.getMethod(methodName,false);
+        if (currentMJClass.getSuperClass() != null) {
+            Method superMethod = currentMJClass.getSuperClass().getMethod(methodName,true);
+            if (superMethod != null && MJUtils.isOverloading(currentMethod,superMethod))  {
+                ErrorReporter.reportOverloading(ctx,methodName,superMethod.getName());
+            }
+        }
+        visitChildren(ctx);
+        return null;
+    }
+
     @Override public ValueType visitAssignStat(@NotNull MiniJavaParser.AssignStatContext ctx) {
-        super.visitAssignStat(ctx);
-        String id = ctx.IDENTIFIER().getText();
-        ValueType value = visit(ctx.expression());
-        System.out.println("Value: "+value);
-        System.out.println(id);
         return null;
     }
 
     @Override public  ValueType visitPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx) {
-        super.visitPlusMinusExpr(ctx);
-        List<MiniJavaParser.ExpressionContext> exps = ctx.expression();
-        int i = 0;
-        for (MiniJavaParser.ExpressionContext ep : exps) {
-            System.out.println(i+++":"+ep.getText());
-        }
         return null;
     }
 
     @Override public ValueType visitThisExpr(@NotNull MiniJavaParser.ThisExprContext ctx) {
-        super.visitThisExpr(ctx);
-        System.out.println("THISHISH");
-        return null;
+        return new ValueType("wtf");
     }
 
 }
