@@ -47,3 +47,11 @@ IDENTIFIER	: ( ('a'..'z') | ('A'..'Z') | '_' )  ( ('a'..'z') | ('A'..'Z') | ('0'
 INT_LIT			: [0-9]+;
 NEWLINE			:	'\r'? '\n' ->skip;
 WS					: [ \t]+ -> skip;
+
+COMMENT
+:   '/*' .*? '*/' -> skip
+;
+
+LINE_COMMENT
+:   '//' ~[\r\n]* -> skip
+;

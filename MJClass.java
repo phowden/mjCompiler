@@ -14,7 +14,11 @@ public class MJClass {
         this.name = n;
         this.fields = new HashSet<Symbol>();
         this.methods = new HashSet<Method>();
-        this.type = new ValueType(name);
+        if (s != null) {
+            this.type = new ValueType(name,superClass.getType());
+        } else {
+            this.type = new ValueType(name);
+        }
     }
 
     public MJClass(String n) {
@@ -23,6 +27,11 @@ public class MJClass {
 
     public void setSuperClass(MJClass s) {
         this.superClass = s;
+        if (s != null) {
+            this.type = new ValueType(this.name,superClass.getType());
+        } else {
+            this.type = new ValueType(this.name);
+        }
     }
 
     public void addField(String n, ValueType t) {
@@ -61,6 +70,9 @@ public class MJClass {
         return null;
     }
 
+    public void removeMethod(Method removeMe) {
+        this.methods.remove(removeMe);
+    }
 
     public Set<Method> getMethods() {
         return this.methods;

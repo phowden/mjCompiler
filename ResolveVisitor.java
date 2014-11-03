@@ -125,22 +125,33 @@ public class ResolveVisitor extends MiniJavaBaseVisitor<ValueType> {
     public void varDeclInMethod(MiniJavaParser.VarDeclContext ctx) {
         String varName = ctx.IDENTIFIER().getText();
         String varType = ctx.type().getText();
-        if (MJUtils.findVariable(currentMJClass,currentMethod,varName) != null) {
+        if (currentMethod.getVariable(varName) != null ) {
             //Report double declaration error
             ErrorReporter.reportDoubleVarDecl(ctx,varName);
         } else {
-            ValueType type = new ValueType(varType);
+            ValueType type;
+            if (mainClass.getClass(varType) != null) {
+                type = mainClass.getClass(varType).getType();
+            } else {
+                type = new ValueType(varType);
+            }
             currentMethod.addVariable(varName,type);
         }
     }
 
     public void varDeclInMJClass(MiniJavaParser.VarDeclContext ctx) {
         String varName = ctx.IDENTIFIER().getText();
+        String varType = ctx.type().getText();
         if (MJUtils.findVariable(currentMJClass,currentMethod,varName) != null) {
             //Report double declaration error
             ErrorReporter.reportDoubleVarDecl(ctx,varName);
         } else {
-            ValueType type = new ValueType(ctx.type().getText());
+            ValueType type;
+            if (mainClass.getClass(varType) != null) {
+                type = mainClass.getClass(varType).getType();
+            } else {
+                type = new ValueType(varType);
+            }
             currentMJClass.addField(varName,type);
         }
     }

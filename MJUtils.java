@@ -17,14 +17,15 @@ public class MJUtils {
     }
 
     public static boolean isOverloading(Method newMethod, Method oldMethod) {
-
-        System.out.println("NM: "+newMethod.toString());
-        System.out.println("OM: "+oldMethod.toString());
+        if (newMethod == null || oldMethod == null) {
+            return false;
+        }
 
         if (!newMethod.getName().equals(oldMethod.getName())) {
             return false;
         }
         if (!newMethod.getReturnType().equals(oldMethod.getReturnType())) {
+            System.out.println("RTYPE");
             return true;
         }
 
@@ -39,6 +40,7 @@ public class MJUtils {
             Symbol newParamI = newParams.get(i);
             Symbol oldParamI = oldParams.get(i);
             if (!oldParamI.getType().equals(newParamI.getType())) {
+                System.out.println("PTL: "+newParamI.getType());
                 return true;
             }
         }

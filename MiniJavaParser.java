@@ -21,14 +21,14 @@ public class MiniJavaParser extends Parser {
 		T__20=17, T__19=18, T__18=19, T__17=20, T__16=21, T__15=22, T__14=23, 
 		T__13=24, T__12=25, T__11=26, T__10=27, T__9=28, T__8=29, T__7=30, T__6=31, 
 		T__5=32, T__4=33, T__3=34, T__2=35, T__1=36, T__0=37, IDENTIFIER=38, INT_LIT=39, 
-		NEWLINE=40, WS=41;
+		NEWLINE=40, WS=41, COMMENT=42, LINE_COMMENT=43;
 	public static final String[] tokenNames = {
 		"<INVALID>", "']'", "'public'", "','", "'while'", "'['", "'-'", "'*'", 
 		"'('", "':'", "'if'", "'int'", "'<'", "'main'", "'false'", "'?'", "'void'", 
 		"'{'", "'extends'", "'else'", "'boolean'", "'}'", "'true'", "'static'", 
 		"'length'", "'System.out.println'", "')'", "'.'", "'+'", "'='", "'return'", 
 		"'String'", "';'", "'&&'", "'this'", "'new'", "'class'", "'!'", "IDENTIFIER", 
-		"INT_LIT", "NEWLINE", "WS"
+		"INT_LIT", "NEWLINE", "WS", "COMMENT", "LINE_COMMENT"
 	};
 	public static final int
 		RULE_goal = 0, RULE_mainClass = 1, RULE_classDecl = 2, RULE_varDecl = 3, 
@@ -1428,7 +1428,7 @@ public class MiniJavaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3+\u00e2\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3-\u00e2\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\7\2\25"+
 		"\n\2\f\2\16\2\30\13\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\5\4\60\n\4\3\4\3\4\7\4\64\n\4"+
