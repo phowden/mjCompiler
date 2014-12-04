@@ -156,8 +156,6 @@ public class ResolveVisitor extends MiniJavaBaseVisitor<ValueType> {
         }
     }
 
-
-
     public void resolveInheritance(List<TerminalNode> identifiers) {
         //If class has a super, add it to the inheritance map
         if (identifiers.size() == 2) {
@@ -212,7 +210,7 @@ public class ResolveVisitor extends MiniJavaBaseVisitor<ValueType> {
 
         /* For each class in the cycle, examine the inheritance chain if the target class
            were to have no super class.  */
-        //TODO FIGURE THIS SHIT OUT
+        //TODO FIGURE THIS OUT
     }
 
     public List<Symbol> getMethodParams(MiniJavaParser.MethodDeclContext ctx) {

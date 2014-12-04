@@ -35,7 +35,7 @@ public class MJClass {
     }
 
     public void addField(String n, ValueType t) {
-        this.fields.add(new Symbol(n,t));
+        this.fields.add(new Symbol(n,t,this));
     }
 
     public void addMethod(Method m) {

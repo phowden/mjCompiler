@@ -2,6 +2,8 @@ import java.util.List;
 
 public class MJUtils {
 
+    private MJUtils() { } 
+
     public static Symbol findVariable(MJClass mjClass, Method method, String variableName) {
         Symbol var = null;
 

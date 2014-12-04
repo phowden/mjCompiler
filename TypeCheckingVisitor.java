@@ -102,6 +102,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     }
 
     @Override public ValueType visitParenedExpr(@NotNull MiniJavaParser.ParenedExprContext ctx) {
+        System.out.println("PARENEXP");
         return visit(ctx.expression());
     }
 
@@ -119,6 +120,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     }
 
     @Override public ValueType visitAndExpr(@NotNull MiniJavaParser.AndExprContext ctx) {
+        System.out.println("ANDEXP");
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
@@ -142,6 +144,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     }
 
     @Override public ValueType visitPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx) {
+        System.out.println("PLUSMINUSEXP");
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
@@ -180,6 +183,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     }
 
     @Override public ValueType visitLessThanExpr(@NotNull MiniJavaParser.LessThanExprContext ctx) {
+        System.out.println("LESSTHANEXP");
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
@@ -203,6 +207,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     }
 
     @Override public ValueType visitMethodCallExpr(@NotNull MiniJavaParser.MethodCallExprContext ctx) {
+        System.out.println("METHODCALLEXP "+ctx.IDENTIFIER().getText());
         ValueType objType = visit(ctx.expression(0));
         String methodName = ctx.IDENTIFIER().getText();
         List<ValueType> paramTypes = new ArrayList<>();
@@ -264,6 +269,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
        new Object expression
      */
     @Override public ValueType visitIdExpr(@NotNull MiniJavaParser.IdExprContext ctx) {
+        System.out.println("ID "+ctx.IDENTIFIER().getText());
         String idName = ctx.IDENTIFIER().getText();
         Symbol idSym = MJUtils.findVariable(currentMJClass,currentMethod,idName);
         if (idSym == null) {
@@ -292,18 +298,22 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
        "this" expression
      */
     @Override public ValueType visitTrueLitExpr(@NotNull MiniJavaParser.TrueLitExprContext ctx) {
+        System.out.println("TRUEEXP");
         return ValueType.BOOL_TYPE;
     }
 
     @Override public ValueType visitFalseLitExpr(@NotNull MiniJavaParser.FalseLitExprContext ctx) {
+        System.out.println("FALSEEXP");
         return ValueType.BOOL_TYPE;
     }
 
     @Override public ValueType visitIntLitExpr(@NotNull MiniJavaParser.IntLitExprContext ctx) {
+        System.out.println("INTLITEXP");
         return ValueType.INT_TYPE;
     }
 
     @Override public ValueType visitThisExpr(@NotNull MiniJavaParser.ThisExprContext ctx) {
+        System.out.println("THISEXP");
         return currentMJClass.getType();
     }
 }

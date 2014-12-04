@@ -33,7 +33,8 @@ public class MainClass {
     }
 
     public String toString() {
-        String msg = "Classes: \n";
+        String msg = "MainClass: "+this.name;
+        msg += "\nClasses: \n";
         for (MJClass mjClass : classes) {
             msg += mjClass.toString();
         }
