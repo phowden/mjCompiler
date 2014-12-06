@@ -11,7 +11,20 @@ class AndExpression extends Expression {
         this.rhs = r;
     }
     public String jasminify() {
-        return null;
+        String instruct = lhs.jasminify();
+        instruct += "\nifeq " + LabelFactory.getNextAndLabel();
+        instruct += rhs.jasminify();
+        instruct += "\nifeq " + LabelFactory.getAndLabel();
+        instruct += "\niconst_1";
+        
+        String labels = "\n" + LabelFactory.getAndLabel() + ":";
+        labels += "\niconst_0";
+
+        instruct += "\ngoto " + LabelFactory.getNextAndLabel();
+
+        labels += "\n" + LabelFactory.getAndLabel() + ":";
+
+        return instruct + labels;
     }
 }
 
@@ -23,19 +36,37 @@ class LessThanExpression extends Expression {
         this.rhs = r;
     }
     public String jasminify() {
-        return null;
+        String instruct = lhs.jasminify();
+        instruct += "\n" + rhs.jasminify();
+        instruct += "\nif_icmplt " + LabelFactory.getNextLtLabel();
+        instruct += "\niconst_0";
+
+        String labels = "\n" + LabelFactory.getLtLabel() + ":";
+        labels += "\niconst_1";
+
+        instruct += "\ngoto " + LabelFactory.getNextLtLabel();
+
+        labels += "\n" + LabelFactory.getLtLabel() + ":";
+
+        return instruct + labels;
     }
 }
 
 class PlusMinusExpression extends Expression {
     Expression lhs, rhs;
+    String plusMinusInstruct;
 
-    public PlusMinusExpression(Expression l, Expression r) {
+    public PlusMinusExpression(Expression l, Expression r, boolean plus) {
         this.lhs = l;
         this.rhs = r;
+        this.plusMinusInstruct = (plus) ? "iadd" : "isub";
     }
     public String jasminify() {
-        return null;
+        String instruct = lhs.jasminify();
+        instruct += "\n";
+        instruct += rhs.jasminify();
+        instruct += "\n" + plusMinusInstruct;
+        return instruct;
     }
 }
 
@@ -47,7 +78,11 @@ class MultiplyExpression extends Expression {
         this.rhs = r;
     }
     public String jasminify() {
-        return null;
+        String instruct = lhs.jasminify();
+        instruct += "\n";
+        instruct += rhs.jasminify();
+        instruct += "\nimul";
+        return instruct;
     }
 }
 
@@ -82,12 +117,12 @@ class ArrayLengthExpression extends Expression {
 
 class MethodCallExpression extends Expression {
     Expression object;
-    String methodName;
+    Method method;
     List<Expression> parameters;
 
-    public MethodCallExpression(Expression o, String m, List<Expression> p) {
+    public MethodCallExpression(Expression o, Method m, List<Expression> p) {
         this.object = o;
-        this.methodName = m;
+        this.method= m;
         this.parameters = p;
     }
     public String jasminify() {
@@ -96,6 +131,7 @@ class MethodCallExpression extends Expression {
         for (Expression e : parameters) {
             instruct += "\n" + e.jasminify();
         }
+        instruct += "\ninvokevirtual " + method.toJasmin();
         return instruct;
     }
 }

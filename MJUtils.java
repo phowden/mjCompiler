@@ -50,4 +50,19 @@ public class MJUtils {
         return false;
     }
 
+    public static String symbolToJasminType(Symbol s) {
+        return typeToJasminType(s.getType());
+    }
+        
+    public static String typeToJasminType(ValueType type) {
+        if (type.equals(ValueType.INT_TYPE)) {
+            return "I";
+        } else if (type.equals(ValueType.INT_ARR_TYPE)) {
+            return "[I";
+        } else if (type.equals(ValueType.BOOL_TYPE)) {
+            return "Z";
+        } else {
+            return param.getClassBelongsTo().getName() + "/" + param.getType().getType() + ";";
+        }
+    }
 }

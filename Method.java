@@ -1,23 +1,26 @@
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class Method {
 
    private String name;
    private List<Symbol> params;
-   private Set<Symbol> variables; 
+   private List<Symbol> variables; 
    private ValueType returnType;
 
-   public Method(ValueType r, String n, List<Symbol> p) {
+   private MJClass classBelongsTo;
+
+   public Method(ValueType r, String n, List<Symbol> p, MJClass c) {
        this.returnType = r;
        this.name = n;
        this.params = p;
-       this.variables = new HashSet<Symbol>();
+       this.classBelongsTo = c;
+       this.variables = new ArrayList<Symbol>();
+       addParams();
    }
 
    public void addVariable(String n, ValueType t) {
-       variables.add(new Symbol(n,t));
+       variables.add(new Symbol(n,t,this));
    }
 
    public String getName() {
@@ -28,7 +31,7 @@ public class Method {
        return this.params;
    }
 
-   public Set<Symbol> getVariables() {
+   public List<Symbol> getVariables() {
        return this.variables;
    }
 
@@ -47,8 +50,16 @@ public class Method {
        return null;
    }
 
+   public int indexOfVariable(String symbolName) {
+       return variables.indexOf(getVariable(symbolName));
+   }
+
    public ValueType getReturnType() {
        return this.returnType;
+   }
+
+   public MJClass getClassBelongsTo() {
+       return this.classBelongsTo;
    }
 
    public String toString() {
@@ -64,4 +75,21 @@ public class Method {
        return msg;
    }
 
+   public String toJasmin() {
+       String jasmin = classBelongsTo.getName() + "/" + name;
+       jasmin += "(";
+       for (Symbol param : params) {
+           jasmin += MJUtils.symbolToJasminType(param);
+       }
+       jasmin += ")";
+       jasmin += MJUtils.typeToJasminType(returnType);
+       return jasmin;
+   }
+
+   private void addParams() {
+       for(Symbol param : params) {
+           Symbol paramLocal = new Symbol(param.getName(),param.getType(),param.getClassBelongsTo(),this);
+           variables.add(paramLocal);
+       }
+   }
 }
