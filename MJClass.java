@@ -1,8 +1,8 @@
 import java.util.Set;
 import java.util.HashSet;
 
-public class MJClass {
-    
+public class MJClass implements Jasminable {
+
     private MJClass superClass;
     private String name;
     private Set<Symbol> fields;
@@ -105,5 +105,30 @@ public class MJClass {
             msg += " " + m.toString() + ";\n";
         }
         return msg + "}\n";
+    }
+
+    public String jasminify() {
+        //Class declaration
+        String jasmin = ".class public " + name;
+        //Super class
+        jasmin += "\n.super " + ((superClass != null) ? superClass.getName() : "java/lang/Object");
+        jasmin += "\n";
+        //Declare fields
+        for (Symbol symbol : fields) {
+            jasmin += "\n.field private " + symbol.getName() + " " + MJUtils.typeToJasminType(symbol.getType());
+        }
+        jasmin += "\n";
+        //Implement methods
+        for (Method method : methods) {
+            jasmin += "\n" + method.jasminify() + "\n";
+        }
+        //Standard constructor
+        jasmin += "\n.method public <init>()V";
+        jasmin += "\naload_0";
+        jasmin += "\ninvokenonvirtual java/lang/Object/<init>()V";
+        jasmin += "\nreturn";
+        jasmin += "\n.end method";
+
+        return jasmin;
     }
 }

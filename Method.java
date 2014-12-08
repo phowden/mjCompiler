@@ -1,7 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
 
-public class Method {
+public class Method implements Jasminable {
 
    private String name;
    private List<Symbol> params;
@@ -10,17 +10,24 @@ public class Method {
 
    private MJClass classBelongsTo;
 
+   private List<Statement> statements;
+
    public Method(ValueType r, String n, List<Symbol> p, MJClass c) {
        this.returnType = r;
        this.name = n;
        this.params = p;
        this.classBelongsTo = c;
        this.variables = new ArrayList<Symbol>();
+       this.statements = new ArrayList<Statement>();
        addParams();
    }
 
    public void addVariable(String n, ValueType t) {
        variables.add(new Symbol(n,t,this));
+   }
+
+   public void addStatement(Statement stat) {
+       statements.add(stat);
    }
 
    public String getName() {
@@ -91,5 +98,27 @@ public class Method {
            Symbol paramLocal = new Symbol(param.getName(),param.getType(),param.getClassBelongsTo(),this);
            variables.add(paramLocal);
        }
+   }
+
+   //TODO: Actually implement
+   public String jasminify() {
+       //Method header
+       String jasmin = ".method public " + toJasmin();
+       //Stack and local limits
+       jasmin += "\n.limit stack " + stackLimit();
+       jasmin += "\n.limit locals " + variables.size();
+       //Body
+       for (Statement stat : statements) {
+           jasmin += "\n" + stat.jasminify();
+       }
+       //Method footer
+       jasmin += "\n.end method";
+
+       return jasmin;
+   }
+
+   private int stackLimit() {
+       //TODO: Find a better limit
+       return 32;
    }
 }

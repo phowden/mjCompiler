@@ -11,20 +11,25 @@ class AndExpression extends Expression {
         this.rhs = r;
     }
     public String jasminify() {
+        //Push LHS Expression and check
         String instruct = lhs.jasminify();
         instruct += "\nifeq " + LabelFactory.getNextAndLabel();
+
+        //Push RHS Expression and check
         instruct += rhs.jasminify();
         instruct += "\nifeq " + LabelFactory.getAndLabel();
+
+        //Neither are false, result is true
         instruct += "\niconst_1";
+        instruct += "\ngoto " + LabelFactory.getEndAndLabel();
+
+        //If either are false, result is false
+        instruct += "\n" + LabelFactory.getAndLabel() + ":";
+        instruct += "\niconst_0";
+
+        instruct += "\n" + LabelFactory.getEndAndLabel() + ":";
         
-        String labels = "\n" + LabelFactory.getAndLabel() + ":";
-        labels += "\niconst_0";
-
-        instruct += "\ngoto " + LabelFactory.getNextAndLabel();
-
-        labels += "\n" + LabelFactory.getAndLabel() + ":";
-
-        return instruct + labels;
+        return instruct;
     }
 }
 
@@ -36,19 +41,23 @@ class LessThanExpression extends Expression {
         this.rhs = r;
     }
     public String jasminify() {
+        //Push LHS and RHS
         String instruct = lhs.jasminify();
         instruct += "\n" + rhs.jasminify();
+
+        //If less than, branch
         instruct += "\nif_icmplt " + LabelFactory.getNextLtLabel();
+        //Else push false
         instruct += "\niconst_0";
+        instruct += "\ngoto " + LabelFactory.getEndLtLabel();
 
-        String labels = "\n" + LabelFactory.getLtLabel() + ":";
-        labels += "\niconst_1";
+        //LHS < RHS
+        instruct += "\n" + LabelFactory.getLtLabel() + ":";
+        instruct += "\niconst_1";
 
-        instruct += "\ngoto " + LabelFactory.getNextLtLabel();
-
-        labels += "\n" + LabelFactory.getLtLabel() + ":";
-
-        return instruct + labels;
+        instruct += "\n" + LabelFactory.getEndLtLabel() + ":";
+        
+        return instruct;
     }
 }
 
@@ -144,9 +153,18 @@ class TernaryExpression extends Expression {
         this.ifTrue = t;
         this.ifFalse = f;
     }
-    //TODO IT RIGHT
+
     public String jasminify() {
-        return null;
+        String instruct = predicate.jasminify();
+        instruct += "\nifeq " + LabelFactory.getNextTernLabel();
+        instruct += "\n" + ifTrue.jasminify();
+        instruct += "\ngoto " + LabelFactory.getEndTernLabel();
+        
+        instruct += "\n" + LabelFactory.getTernLabel() + ":";
+        instruct += "\n" + ifFalse.jasminify();
+        instruct += "\n" + LabelFactory.getEndTernLabel() + ":";
+
+        return instruct;
     }
 }
 

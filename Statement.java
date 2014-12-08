@@ -20,7 +20,18 @@ class IfStatement extends Statement {
     Statement ifTrue, ifFalse;
 
     public String jasminify() {
-        return null;
+        //Check the predicate
+        String instruct = predicate.jasminify();
+        instruct += "\nifeq " + LabelFactory.getNextIfLabel();
+        //On true
+        instruct += "\n" + ifTrue.jasminify();
+        instruct += "\ngoto " + LabelFactory.getEndIfLabel();
+        //On false
+        instruct += "\n" + LabelFactory.getIfLabel() + ":";
+        instruct += "\n" + ifFalse.jasminify();
+        instruct += "\n" + LabelFactory.getEndIfLabel() + ":";
+
+        return instruct;
     }
 }
 
@@ -29,7 +40,18 @@ class WhileStatement extends Statement {
     Statement body;
 
     public String jasminify() {
-        return null;
+        //Set where to loop up to
+        String instruct = LabelFactory.getNextWhileLabel();
+        //Check predicate
+        instruct += "\n" + predicate.jasminify();
+        instruct += "\nifeq " + LabelFactory.getEndWhileLabel();
+        //Body
+        instruct += "\n" + body.jasminify();
+        //Loop back to predicate
+        instruct += "\ngoto " + LabelFactory.getWhileLabel();
+        instruct += "\n" + LabelFactory.getEndWhileLabel();
+        
+        return instruct;
     }
 }
 
@@ -75,9 +97,9 @@ class AssignmentStatement extends Statement {
         String instruct = value.jasminify();
         int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
         String type = identifier.getType().getType();
-        if (typeOf.equals(ValueType.INT_TYPE)) {
+        if (type.equals(ValueType.INT_TYPE)) {
             instruct += "\nistore " + localIndex;
-        } else if (typeOf.equals(ValueType.BOOL_TYPE)) {
+        } else if (type.equals(ValueType.BOOL_TYPE)) {
             instruct += "\nistore " + localIndex;
         } else {
             instruct += "astore " + localIndex;

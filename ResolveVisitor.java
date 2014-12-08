@@ -95,7 +95,7 @@ public class ResolveVisitor extends MiniJavaBaseVisitor<ValueType> {
         ValueType returnType = new ValueType(ctx.type(0).getText());
         List<Symbol> params = getMethodParams(ctx);
 
-        Method newMethod = new Method(returnType,methodName,params);
+        Method newMethod = new Method(returnType,methodName,params,currentMJClass);
 
         if (currentMJClass.getMethod(methodName,false) != null) {
             //Report double declaration error
@@ -234,7 +234,5 @@ public class ResolveVisitor extends MiniJavaBaseVisitor<ValueType> {
         return this.mainClass;
     }
 
-    public void printClasses() {
-        System.out.println(mainClass.toString());
-    }
+    
 }

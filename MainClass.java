@@ -41,4 +41,12 @@ public class MainClass {
         return msg;
     }
 
+    //TODO: Actually implement
+    public void compile() {
+        for (MJClass mjClass : classes) {
+            System.out.println("--------------------------------------------------------");
+            System.out.println(mjClass.jasminify());
+        }
+    }
+
 }

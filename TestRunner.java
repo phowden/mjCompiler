@@ -35,7 +35,7 @@ public class TestRunner {
         t.visit(tree);
 
         System.out.println("\n");
-        //r.printClasses();
+        t.printClasses();
 
 
 	}

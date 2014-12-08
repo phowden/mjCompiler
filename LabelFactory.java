@@ -1,10 +1,19 @@
 public class LabelFactory {
 
     private static final String IF_BASE = "IF_";
+    private static final String END_IF_BASE = "END_IF_";
+
     private static final String WHILE_BASE = "WHILE_";
+    private static final String END_WHILE_BASE = "END_WHILE_";
+
     private static final String TERN_BASE = "TERN_";
+    private static final String END_TERN_BASE = "END_TERN_";
+
     private static final String AND_BASE = "AND_";
+    private static final String END_AND_BASE = "END_AND_";
+
     private static final String LT_BASE = "LT_";
+    private static final String END_LT_BASE = "END_LT_";
 
     private static int ifNum = 0;
     private static int whileNum = 0;
@@ -18,20 +27,40 @@ public class LabelFactory {
         return IF_BASE + ifNum;
     }
 
+    public static String getEndIfLabel() {
+        return END_IF_BASE + ifNum;
+    }
+
     public static String getWhileLabel() {
         return WHILE_BASE + whileNum;
+    }
+
+    public static String getEndWhileLabel() {
+        return END_WHILE_BASE + whileNum;
     }
 
     public static String getTernLabel() {
         return TERN_BASE + ternNum;
     }
 
+    public static String getEndTernLabel() {
+        return END_TERN_BASE + ternNum;
+    }
+
     public static String getAndLabel() {
         return AND_BASE + andNum;
     }
 
+    public static String getEndAndLabel() {
+        return END_AND_BASE + andNum;
+    }
+
     public static String getLtLabel() {
         return LT_BASE + ltNum;
+    }
+
+    public static String getEndLtLabel() {
+        return END_LT_BASE + ltNum;
     }
 
     public static String getNextIfLabel() {

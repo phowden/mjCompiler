@@ -48,7 +48,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
         }
         return null;
     }
-    
+
     @Override public ValueType visitWhileStat(@NotNull MiniJavaParser.WhileStatContext ctx) {
         ValueType expressionType = visit(ctx.expression());
         if(!expressionType.equals(ValueType.BOOL_TYPE)) {
@@ -298,23 +298,22 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
        "this" expression
      */
     @Override public ValueType visitTrueLitExpr(@NotNull MiniJavaParser.TrueLitExprContext ctx) {
-        System.out.println("TRUEEXP");
         return ValueType.BOOL_TYPE;
     }
 
     @Override public ValueType visitFalseLitExpr(@NotNull MiniJavaParser.FalseLitExprContext ctx) {
-        System.out.println("FALSEEXP");
         return ValueType.BOOL_TYPE;
     }
 
     @Override public ValueType visitIntLitExpr(@NotNull MiniJavaParser.IntLitExprContext ctx) {
-        System.out.println("INTLITEXP");
         return ValueType.INT_TYPE;
     }
 
     @Override public ValueType visitThisExpr(@NotNull MiniJavaParser.ThisExprContext ctx) {
-        System.out.println("THISEXP");
         return currentMJClass.getType();
+    }
+    public void printClasses() {
+        mainClass.compile();
     }
 }
 
