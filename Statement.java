@@ -6,6 +6,10 @@ public abstract class Statement implements Jasminable{
 class ScopedStatement extends Statement {
     List<Statement> statements;
 
+    public ScopedStatement(List<Statement> s) {
+        this.statements = s;
+    }
+
     public String jasminify() {
         String instructions = "";
         for (Statement statement : statements) {
@@ -18,6 +22,12 @@ class ScopedStatement extends Statement {
 class IfStatement extends Statement {
     Expression predicate;
     Statement ifTrue, ifFalse;
+
+    public IfStatement(Expression p, Statement t, Statement f) {
+        this.predicate = p;
+        this.ifTrue = t;
+        this.ifFalse = f;
+    }
 
     public String jasminify() {
         //Check the predicate
@@ -39,6 +49,11 @@ class WhileStatement extends Statement {
     Expression predicate;
     Statement body;
 
+    public WhileStatement(Expression p, Statement b) {
+        this.predicate = p;
+        this.body = b;
+    }
+
     public String jasminify() {
         //Set where to loop up to
         String instruct = LabelFactory.getNextWhileLabel();
@@ -57,6 +72,10 @@ class WhileStatement extends Statement {
 
 class PrintlnStatement extends Statement {
     Expression expression;
+
+    public PrintlnStatement(Expression e) {
+        this.expression = e;
+    }
 
     public String jasminify() {
         String instruct = "getstatic java/lang/System/out/ Ljava/io/PrintStream;";

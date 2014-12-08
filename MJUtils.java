@@ -50,6 +50,12 @@ public class MJUtils {
         return false;
     }
 
+    //TODO: Actually implement
+    public static Statement generateStatement(MiniJavaParser.StatementContext ctx) {
+        return null;
+    }
+
+    //JASMIN CODE GENERATION METHDOS
     public static String symbolToJasminType(Symbol s) {
         return typeToJasminType(s.getType());
     }
