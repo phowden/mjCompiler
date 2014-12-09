@@ -5,13 +5,15 @@ import java.util.ArrayList;
 public class StatementBuildingVisitor extends MiniJavaBaseVisitor<Statement> {
 
     private final ExpressionBuildingVisitor expVisitor;
+    private final MainClass mainClass;
     private final MJClass mjClass;
     private final Method method;
 
-    public StatementBuildingVisitor(MJClass mjc, Method m) {
+    public StatementBuildingVisitor(MainClass mc, MJClass mjc, Method m) {
+        this.mainClass = mc;
         this.mjClass = mjc;
         this.method = m;
-        expVisitor = new ExpressionBuildingVisitor();
+        this.expVisitor = new ExpressionBuildingVisitor(mainClass,mjClass,method);
     }
 
     @Override public Statement visitScopedStat(@NotNull MiniJavaParser.ScopedStatContext ctx) {
@@ -45,18 +47,20 @@ public class StatementBuildingVisitor extends MiniJavaBaseVisitor<Statement> {
     //TODO: How to get symbol? Calls from other visitors won't pass symbols
     public Statement visitAssignStat(@NotNull MiniJavaParser.AssignStatContext ctx) {
         String idName = ctx.IDENTIFIER().getText();
-        Symbol idSym = MJUtils.findVariable(currentMJClass,currentMethod,idName);
+        Symbol idSym = MJUtils.findVariable(mjClass,method,idName);
         return new AssignmentStatement(idSym,expVisitor.visit(ctx.expression()));
     }
 
     //TODO: How to get symbol? Calls from other visitors won't pass symbols
     public Statement visitArrAssignStat(@NotNull MiniJavaParser.ArrAssignStatContext ctx, Symbol id) {
+        String idName = ctx.IDENTIFIER().getText();
+        Symbol idSym = MJUtils.findVariable(mjClass,method,idName);
         final int INDEX = 0;
         final int VALUE = 1;
         Expression index = expVisitor.visit(ctx.expression(INDEX));
         Expression value = expVisitor.visit(ctx.expression(VALUE));
 
-        return new ArrayAssignmentStatement(id,index,value);
+        return new ArrayAssignmentStatement(idSym,index,value);
     }
 }
 

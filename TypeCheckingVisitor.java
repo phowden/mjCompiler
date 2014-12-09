@@ -16,6 +16,12 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
         this.currentMethod = null;
     }
 
+    public TypeCheckingVisitor(MainClass mc, MJClass mjc, Method m) {
+        this.mainClass = mc;
+        this.currentMJClass = mjc;
+        this.currentMethod = m;
+    }
+
     @Override public ValueType visitClassDecl(@NotNull MiniJavaParser.ClassDeclContext ctx) {
         String className = ctx.IDENTIFIER().get(0).getText();
         currentMJClass = mainClass.getClass(className);

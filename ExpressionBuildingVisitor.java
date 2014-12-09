@@ -2,6 +2,15 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
 
+    private final MainClass mainClass;
+    private final MJClass mjClass;
+    private final Method method;
+
+    public ExpressionBuildingVisitor(MainClass mc, MJClass c, Method m) {
+        this.mainClass = mc;
+        this.mjClass = c;
+        this.method = m;
+    }
 
     @Override public Expression visitParenedExpr(@NotNull MiniJavaParser.ParenedExprContext ctx) {
         return visit(ctx.expression());
@@ -24,7 +33,7 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
     }
 
     @Override public Expression visitNewArrExpr(@NotNull MiniJavaParser.NewArrExprContext ctx) {
-        return new NewArrayExpression(visit(ctx.expression());
+        return new NewArrayExpression(visit(ctx.expression()));
     }
 
     @Override public Expression visitPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx) {
@@ -32,6 +41,8 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         final int RHS = 1;
         Expression lhs = visit(ctx.expression(LHS));
         Expression rhs = visit(ctx.expression(RHS));
+        //TODO: Figure out plus/minus
+        return null;
     }
 
     @Override public Expression visitNegateExpr(@NotNull MiniJavaParser.NegateExprContext ctx) {
@@ -59,7 +70,20 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
     }
 
     @Override public Expression visitMethodCallExpr(@NotNull MiniJavaParser.MethodCallExprContext ctx) {
-        return null; //TODO: Actually implement
+        final int OBJECT = 0;
+        Expression object = visit(ctx.expression(OBJECT));
+
+        //Do a bunch of ugly stuff to get method
+        TypeCheckingVisitor typeCheck = new TypeCheckingVisitor(mainClass,mjClass,method)
+        ValueType objectType = typeCheck.visit(ctx.expression(OBJECT));
+        MJClass objectClass = mainClas.getClass(objectType.getType());
+        Method methodToCall = objectClass.getMethod(ctx.IDENTIFIER().getText(),true);
+
+        List<Expression> params = new ArrayList<>();
+        for (int paramIndex = 1; paramIndex < ctx.expression().length; ++paramIndex) {
+            params.add(visit(ctx.expression(paramIndex)));
+        }
+        return new MethodCallExpression(object,methodToCall,params);
     }
 
     @Override public Expression visitTernaryExpr(@NotNull MiniJavaParser.TernaryExprContext ctx)  {
@@ -74,11 +98,15 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
     }
 
     @Override public Expression visitIdExpr(@NotNull MiniJavaParser.IdExprContext ctx) {
-        return null; //TODO: Actually implement
+        String idName = ctx.IDENTIFIER().getText();
+        Symbol IdSym = MJUtils.findVariable(mjClass,method,idName);
+        return new IdentifierExpression(idSym);
     }
 
     @Override public Expression visitNewObjExpr(@NotNull MiniJavaParser.NewObjExprContext ctx) {
-        return null; //TODO: Actually implement
+        String objName = ctx.IDENTIFIER().getText();
+        MJClass objClass = mainClass.getClass(objName);
+        return new NewObjectExpression(objClass);
     }
 
     @Override public Expression visitTrueLitExpr(@NotNull MiniJavaParser.TrueLitExprContext ctx) {
@@ -90,7 +118,8 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
     }
 
     @Override public Expression visitIntLitExpr(@NotNull MiniJavaParser.IntLitExprContext ctx) {
-        return null; //TODO: Actually implement
+        int value = Integer.parseInt(ctx.INT_LIT().getText());
+        return new IntegerLiteralExpression(value);
     }
 
     @Override public Expression visitThisExpr(@NotNull MiniJavaParser.ThisExprContext ctx) {
