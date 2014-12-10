@@ -29,16 +29,18 @@ public abstract class Statement implements Jasminable {
         }
 
         public String jasminify() {
+            String ifLabel = LabelFactory.getNextIfLabel();
+            String endIfLabel = LabelFactory.getEndIfLabel();
             //Check the predicate
             String instruct = predicate.jasminify();
-            instruct += "\nifeq " + LabelFactory.getNextIfLabel();
+            instruct += "\nifeq " + ifLabel;
             //On true
             instruct += "\n" + ifTrue.jasminify();
-            instruct += "\ngoto " + LabelFactory.getEndIfLabel();
+            instruct += "\ngoto " + endIfLabel;
             //On false
-            instruct += "\n" + LabelFactory.getIfLabel() + ":";
+            instruct += "\n" + ifLabel + ":";
             instruct += "\n" + ifFalse.jasminify();
-            instruct += "\n" + LabelFactory.getEndIfLabel() + ":";
+            instruct += "\n" + endIfLabel + ":";
 
             return instruct;
         }
@@ -54,16 +56,18 @@ public abstract class Statement implements Jasminable {
         }
 
         public String jasminify() {
+            String whileLabel = LabelFactory.getNextWhileLabel();
+            String endWhileLabel = LabelFactory.getEndWhileLabel();
             //Set where to loop up to
-            String instruct = LabelFactory.getNextWhileLabel();
+            String instruct = whileLabel + ":";
             //Check predicate
             instruct += "\n" + predicate.jasminify();
-            instruct += "\nifeq " + LabelFactory.getEndWhileLabel();
+            instruct += "\nifeq " + endWhileLabel;
             //Body
             instruct += "\n" + body.jasminify();
             //Loop back to predicate
-            instruct += "\ngoto " + LabelFactory.getWhileLabel();
-            instruct += "\n" + LabelFactory.getEndWhileLabel();
+            instruct += "\ngoto " + whileLabel;
+            instruct += "\n" + endWhileLabel + ":";
 
             return instruct;
         }
@@ -77,7 +81,7 @@ public abstract class Statement implements Jasminable {
         }
 
         public String jasminify() {
-            String instruct = "getstatic java/lang/System/out/ Ljava/io/PrintStream;";
+            String instruct = "getstatic java/lang/System/out Ljava/io/PrintStream;";
             instruct += "\n" + expression.jasminify();
             instruct += "\ninvokevirtual java/io/PrintStream/println(I)V";
             return instruct;
@@ -102,11 +106,11 @@ public abstract class Statement implements Jasminable {
         }
 
         private String jasminifyFieldAssign() {
-            String instruct = value.jasminify();
-            String type = identifier.getType().getType();
+            String type = MJUtils.typeToJasminType(identifier.getType());
             String className = identifier.getClassBelongsTo().getName();
 
-            instruct += "\naload_0";
+            String instruct = "aload_0";
+            instruct += "\n" + value.jasminify();
             instruct += "\nputfield " + className + "/" + identifier.getName() + " " + type;
             return instruct;
         }
@@ -114,13 +118,13 @@ public abstract class Statement implements Jasminable {
         private String jasminifyLocalAssign() {
             String instruct = value.jasminify();
             int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
-            String type = identifier.getType().getType();
+            ValueType type = identifier.getType();
             if (type.equals(ValueType.INT_TYPE)) {
                 instruct += "\nistore " + localIndex;
             } else if (type.equals(ValueType.BOOL_TYPE)) {
                 instruct += "\nistore " + localIndex;
             } else {
-                instruct += "astore " + localIndex;
+                instruct += "\nastore " + localIndex;
             }
             return instruct;
         }

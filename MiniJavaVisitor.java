@@ -59,12 +59,12 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNewArrExpr(@NotNull MiniJavaParser.NewArrExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code plusMinusExpr}
+	 * Visit a parse tree produced by the {@code plusExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx);
+	T visitPlusExpr(@NotNull MiniJavaParser.PlusExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiniJavaParser#classDecl}.
 	 * @param ctx the parse tree
@@ -133,19 +133,19 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code negateExpr}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNegateExpr(@NotNull MiniJavaParser.NegateExprContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code falseLitExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFalseLitExpr(@NotNull MiniJavaParser.FalseLitExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code notExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotExpr(@NotNull MiniJavaParser.NotExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arrAccessExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -188,6 +188,13 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWhileStat(@NotNull MiniJavaParser.WhileStatContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code minusExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMinusExpr(@NotNull MiniJavaParser.MinusExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code boolType}
 	 * labeled alternative in {@link MiniJavaParser#type}.
 	 * @param ctx the parse tree
@@ -201,6 +208,13 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIfStat(@NotNull MiniJavaParser.IfStatContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code negExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNegExpr(@NotNull MiniJavaParser.NegExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code thisExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.

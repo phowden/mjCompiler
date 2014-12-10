@@ -1,5 +1,8 @@
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
 
     private final MainClass mainClass;
@@ -21,7 +24,7 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         final int RHS = 1;
         Expression lhs = visit(ctx.expression(LHS));
         Expression rhs = visit(ctx.expression(RHS));
-        return new MultiplyExpression(lhs,rhs);
+        return new Expression.MultiplyExpression(lhs,rhs);
     }
 
     @Override public Expression visitAndExpr(@NotNull MiniJavaParser.AndExprContext ctx) {
@@ -29,24 +32,37 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         final int RHS = 1;
         Expression lhs = visit(ctx.expression(LHS));
         Expression rhs = visit(ctx.expression(RHS));
-        return new AndExpression(lhs,rhs);
+        return new Expression.AndExpression(lhs,rhs);
     }
 
     @Override public Expression visitNewArrExpr(@NotNull MiniJavaParser.NewArrExprContext ctx) {
-        return new NewArrayExpression(visit(ctx.expression()));
+        return new Expression.NewArrayExpression(visit(ctx.expression()));
     }
 
-    @Override public Expression visitPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx) {
+    @Override public Expression visitPlusExpr(@NotNull MiniJavaParser.PlusExprContext ctx) {
         final int LHS = 0;
         final int RHS = 1;
         Expression lhs = visit(ctx.expression(LHS));
         Expression rhs = visit(ctx.expression(RHS));
-        //TODO: Figure out plus/minus
-        return null;
+
+        return new Expression.PlusMinusExpression(lhs,rhs,true);
     }
 
-    @Override public Expression visitNegateExpr(@NotNull MiniJavaParser.NegateExprContext ctx) {
-        return new NegateExpression(visit(ctx.expression()));
+    @Override public Expression visitMinusExpr(@NotNull MiniJavaParser.MinusExprContext ctx) {
+        final int LHS = 0;
+        final int RHS = 1;
+        Expression lhs = visit(ctx.expression(LHS));
+        Expression rhs = visit(ctx.expression(RHS));
+
+        return new Expression.PlusMinusExpression(lhs,rhs,false);
+    }
+
+    @Override public Expression visitNegExpr(@NotNull MiniJavaParser.NegExprContext ctx) {
+        return new Expression.NegateExpression(visit(ctx.expression()));
+    }
+
+    @Override public Expression visitNotExpr(@NotNull MiniJavaParser.NotExprContext ctx) {
+        return new Expression.NegateExpression(visit(ctx.expression()));
     }
 
     @Override public Expression visitArrAccessExpr(@NotNull MiniJavaParser.ArrAccessExprContext ctx) {
@@ -54,7 +70,7 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         final int INDEX = 1;
         Expression array = visit(ctx.expression(ARRAY));
         Expression index = visit(ctx.expression(INDEX));
-        return new ArrayAccessExpression(array,index);
+        return new Expression.ArrayAccessExpression(array,index);
     }
 
     @Override public Expression visitLessThanExpr(@NotNull MiniJavaParser.LessThanExprContext ctx) {
@@ -62,11 +78,11 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         final int RHS = 1;
         Expression lhs = visit(ctx.expression(LHS));
         Expression rhs = visit(ctx.expression(RHS));
-        return new LessThanExpression(lhs,rhs);
+        return new Expression.LessThanExpression(lhs,rhs);
     }
 
     @Override public Expression visitArrLengthExpr(@NotNull MiniJavaParser.ArrLengthExprContext ctx) {
-        return new ArrayLengthExpression(visit(ctx.expression()));
+        return new Expression.ArrayLengthExpression(visit(ctx.expression()));
     }
 
     @Override public Expression visitMethodCallExpr(@NotNull MiniJavaParser.MethodCallExprContext ctx) {
@@ -74,16 +90,16 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         Expression object = visit(ctx.expression(OBJECT));
 
         //Do a bunch of ugly stuff to get method
-        TypeCheckingVisitor typeCheck = new TypeCheckingVisitor(mainClass,mjClass,method)
+        TypeCheckingVisitor typeCheck = new TypeCheckingVisitor(mainClass,mjClass,method);
         ValueType objectType = typeCheck.visit(ctx.expression(OBJECT));
-        MJClass objectClass = mainClas.getClass(objectType.getType());
+        MJClass objectClass = mainClass.getClass(objectType.getType());
         Method methodToCall = objectClass.getMethod(ctx.IDENTIFIER().getText(),true);
 
         List<Expression> params = new ArrayList<>();
-        for (int paramIndex = 1; paramIndex < ctx.expression().length; ++paramIndex) {
+        for (int paramIndex = 1; paramIndex < ctx.expression().size(); ++paramIndex) {
             params.add(visit(ctx.expression(paramIndex)));
         }
-        return new MethodCallExpression(object,methodToCall,params);
+        return new Expression.MethodCallExpression(object,methodToCall,params);
     }
 
     @Override public Expression visitTernaryExpr(@NotNull MiniJavaParser.TernaryExprContext ctx)  {
@@ -94,35 +110,35 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         Expression ifTrue = visit(ctx.expression(TRUE));
         Expression ifFalse = visit(ctx.expression(FALSE));
 
-        return new TernaryExpression(predicate,ifTrue,ifFalse);
+        return new Expression.TernaryExpression(predicate,ifTrue,ifFalse);
     }
 
     @Override public Expression visitIdExpr(@NotNull MiniJavaParser.IdExprContext ctx) {
         String idName = ctx.IDENTIFIER().getText();
-        Symbol IdSym = MJUtils.findVariable(mjClass,method,idName);
-        return new IdentifierExpression(idSym);
+        Symbol idSym = MJUtils.findVariable(mjClass,method,idName);
+        return new Expression.IdentifierExpression(idSym);
     }
 
     @Override public Expression visitNewObjExpr(@NotNull MiniJavaParser.NewObjExprContext ctx) {
         String objName = ctx.IDENTIFIER().getText();
         MJClass objClass = mainClass.getClass(objName);
-        return new NewObjectExpression(objClass);
+        return new Expression.NewObjectExpression(objClass);
     }
 
     @Override public Expression visitTrueLitExpr(@NotNull MiniJavaParser.TrueLitExprContext ctx) {
-        return new BooleanLiteralExpression(true);
+        return new Expression.BooleanLiteralExpression(true);
     }
     
     @Override public Expression visitFalseLitExpr(@NotNull MiniJavaParser.FalseLitExprContext ctx) {
-        return new BooleanLiteralExpression(false);
+        return new Expression.BooleanLiteralExpression(false);
     }
 
     @Override public Expression visitIntLitExpr(@NotNull MiniJavaParser.IntLitExprContext ctx) {
         int value = Integer.parseInt(ctx.INT_LIT().getText());
-        return new IntegerLiteralExpression(value);
+        return new Expression.IntegerLiteralExpression(value);
     }
 
     @Override public Expression visitThisExpr(@NotNull MiniJavaParser.ThisExprContext ctx) {
-        return new ThisExpression();
+        return new Expression.ThisExpression();
     }
 }

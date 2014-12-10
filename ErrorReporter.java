@@ -15,6 +15,8 @@ public class ErrorReporter {
 
     public static final String TYPE_MISMATCH = "Error on line %d: type mismatch, expected %s but found %s\n";
 
+    public static final String USED_BEFORE_INIT = "Error on line %d: variable %s used before initilization\n";
+
     private static boolean rtError = false;
 
     public static void reportOverloading(ParserRuleContext ctx, String newMethodName, String oldMethod) {
@@ -51,6 +53,9 @@ public class ErrorReporter {
         rtError = false;
     }
 
+    public static void reportUsedBeforeInitialized(ParserRuleContext ctx, String symName) {
+        reportError(ctx,USED_BEFORE_INIT,symName,null);
+    }
 
     public static void reportError(ParserRuleContext ctx, String msg, String symbolName, String optSymbol) {
         String input = ctx.getStart().getInputStream().toString();
@@ -71,5 +76,6 @@ public class ErrorReporter {
         } else {
             System.err.printf(msg,lineNumber,symbolName,optSymbol);
         }
+        MJUtils.markErrorOccured();
     }
 }

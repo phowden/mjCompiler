@@ -54,8 +54,57 @@ public class Symbol {
     }
 
     public String toLongString() {
-        return type.toString() + " " + name + ((fieldOf != null) ? "field of " + fieldOf.getName() : "local of " + localOf.getName());
+        return type.toString() + " " + name + ((fieldOf != null) ? " field of " + fieldOf.getName() : " local of " + localOf.getName());
     }
-}
+
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        }
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Symbol)) {
+            return false;
+        }
+        Symbol s = (Symbol)object;
+        
+        if (!this.getName().equals(s.getName())) {
+            return false;
+        }
+
+        if (!this.getType().equals(s.getType())) {
+            return false;
+        }
+
+        if (this.isLocal()) {
+            if(!s.isLocal()) {
+                return false;
+            } else {
+                //Check equal methods
+                Method thisMethod = this.getMethodBelongsTo();
+                Method sMethod = s.getMethodBelongsTo();
+                if (!thisMethod.equals(sMethod)) {
+                    return false;
+                }
+            }
+        }
+
+        if (this.isField()) {
+            if(!s.isField()) {
+                return false;
+            } else {
+                //Check equal classes
+                MJClass thisClass = this.getClassBelongsTo();
+                MJClass sClass = this.getClassBelongsTo();
+                if (!thisClass.equals(sClass)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+  }
 
 

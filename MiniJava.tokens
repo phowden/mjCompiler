@@ -51,8 +51,8 @@ COMMENT=42
 'return'=30
 '='=29
 '+'=28
-'.'=27
-')'=26
+')'=27
+'.'=26
 'System.out.println'=25
 'length'=24
 'static'=23

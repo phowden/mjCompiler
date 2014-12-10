@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 public class StatementBuildingVisitor extends MiniJavaBaseVisitor<Statement> {
 
-    private final ExpressionBuildingVisitor expVisitor;
     private final MainClass mainClass;
     private final MJClass mjClass;
     private final Method method;
+
+    private final ExpressionBuildingVisitor expVisitor;
 
     public StatementBuildingVisitor(MainClass mc, MJClass mjc, Method m) {
         this.mainClass = mc;
@@ -21,7 +22,7 @@ public class StatementBuildingVisitor extends MiniJavaBaseVisitor<Statement> {
         for (MiniJavaParser.StatementContext statementCtx : ctx.statement()) {
             statements.add(visit(statementCtx));
         }
-        return new ScopedStatement(statements);
+        return new Statement.ScopedStatement(statements);
     }
 
     @Override public Statement visitIfStat(@NotNull MiniJavaParser.IfStatContext ctx) {
@@ -30,29 +31,27 @@ public class StatementBuildingVisitor extends MiniJavaBaseVisitor<Statement> {
         Expression predicate = expVisitor.visit(ctx.expression());
         Statement ifTrue = visit(ctx.statement(IF_TRUE));
         Statement ifFalse = visit(ctx.statement(IF_FALSE));
-        return new IfStatement(predicate,ifTrue,ifFalse);
+        return new Statement.IfStatement(predicate,ifTrue,ifFalse);
     }
 
     @Override public Statement visitWhileStat(@NotNull MiniJavaParser.WhileStatContext ctx) {
        Expression predicate = expVisitor.visit(ctx.expression());
        Statement body = visit(ctx.statement());
-       return new WhileStatement(predicate,body);
+       return new Statement.WhileStatement(predicate,body);
     }
     
     @Override public Statement visitPrintlnStat(@NotNull MiniJavaParser.PrintlnStatContext ctx) {
         Expression expression = expVisitor.visit(ctx.expression());
-        return new PrintlnStatement(expression);
+        return new Statement.PrintlnStatement(expression);
     }
 
-    //TODO: How to get symbol? Calls from other visitors won't pass symbols
-    public Statement visitAssignStat(@NotNull MiniJavaParser.AssignStatContext ctx) {
+    @Override public Statement visitAssignStat(@NotNull MiniJavaParser.AssignStatContext ctx) {
         String idName = ctx.IDENTIFIER().getText();
         Symbol idSym = MJUtils.findVariable(mjClass,method,idName);
-        return new AssignmentStatement(idSym,expVisitor.visit(ctx.expression()));
+        return new Statement.AssignmentStatement(idSym,expVisitor.visit(ctx.expression()));
     }
 
-    //TODO: How to get symbol? Calls from other visitors won't pass symbols
-    public Statement visitArrAssignStat(@NotNull MiniJavaParser.ArrAssignStatContext ctx, Symbol id) {
+    @Override public Statement visitArrAssignStat(@NotNull MiniJavaParser.ArrAssignStatContext ctx) {
         String idName = ctx.IDENTIFIER().getText();
         Symbol idSym = MJUtils.findVariable(mjClass,method,idName);
         final int INDEX = 0;
@@ -60,7 +59,7 @@ public class StatementBuildingVisitor extends MiniJavaBaseVisitor<Statement> {
         Expression index = expVisitor.visit(ctx.expression(INDEX));
         Expression value = expVisitor.visit(ctx.expression(VALUE));
 
-        return new ArrayAssignmentStatement(idSym,index,value);
+        return new Statement.ArrayAssignmentStatement(idSym,index,value);
     }
 }
 

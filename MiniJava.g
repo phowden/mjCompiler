@@ -24,22 +24,24 @@ statement:	'{' ( statement )* '}'                                # scopedStat
 		|	IDENTIFIER '[' expression ']' '=' expression ';'      # arrAssignStat
 		;
 
-expression:	expression '&&' expression                                              # andExpr
-		| expression '<' expression                                                 # lessThanExpr
-		| expression ( '+' | '-' ) expression                                       # plusMinusExpr
-		| expression '*' expression                                                 # multExpr
-        | expression '[' expression ']'                                             # arrAccessExpr
+expression: expression '[' expression ']'                                           # arrAccessExpr
 		| expression '.' 'length'                                                   # arrLengthExpr
 		| expression '.' IDENTIFIER '(' ( expression ( ',' expression )* )? ')'     # methodCallExpr
+        | '-' expression                                                            # negExpr
+		| '!' expression                                                            # notExpr
+		| 'new' 'int' '[' expression ']'                                            # newArrExpr
+		| 'new' IDENTIFIER '(' ')'                                                  # newObjExpr
+		| expression '+' expression                                                 # plusExpr
+        | expression '-' expression                                                 # minusExpr
+		| expression '*' expression                                                 # multExpr
+		| expression '<' expression                                                 # lessThanExpr
+        | expression '&&' expression                                                # andExpr
 		| expression '?' expression ':' expression                                  # ternaryExpr
 		| INT_LIT                                                                   # intLitExpr
 		| 'true'                                                                    # trueLitExpr
 		| 'false'                                                                   # falseLitExpr
 		| 'this'                                                                    # thisExpr
-		| 'new' 'int' '[' expression ']'                                            # newArrExpr
-		| 'new' IDENTIFIER '(' ')'                                                  # newObjExpr
 		| IDENTIFIER                                                                # idExpr
-		| '!' expression                                                            # negateExpr
 		| '(' expression ')'                                                        # parenedExpr 
 		;
 

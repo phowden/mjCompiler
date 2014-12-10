@@ -2,6 +2,8 @@ import java.util.List;
 
 public class MJUtils {
 
+    public static boolean error = false;
+
     private MJUtils() { } 
 
     public static Symbol findVariable(MJClass mjClass, Method method, String variableName) {
@@ -50,9 +52,8 @@ public class MJUtils {
         return false;
     }
 
-    //TODO: Actually implement
-    public static Statement generateStatement(MiniJavaParser.StatementContext ctx) {
-        return null;
+    public static void markErrorOccured() {
+        error = true;
     }
 
     //JASMIN CODE GENERATION METHDOS

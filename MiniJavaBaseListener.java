@@ -100,13 +100,13 @@ public class MiniJavaBaseListener implements MiniJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx) { }
+	@Override public void enterPlusExpr(@NotNull MiniJavaParser.PlusExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx) { }
+	@Override public void exitPlusExpr(@NotNull MiniJavaParser.PlusExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -232,18 +232,6 @@ public class MiniJavaBaseListener implements MiniJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNegateExpr(@NotNull MiniJavaParser.NegateExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNegateExpr(@NotNull MiniJavaParser.NegateExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFalseLitExpr(@NotNull MiniJavaParser.FalseLitExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -251,6 +239,18 @@ public class MiniJavaBaseListener implements MiniJavaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFalseLitExpr(@NotNull MiniJavaParser.FalseLitExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNotExpr(@NotNull MiniJavaParser.NotExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNotExpr(@NotNull MiniJavaParser.NotExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -328,6 +328,18 @@ public class MiniJavaBaseListener implements MiniJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMinusExpr(@NotNull MiniJavaParser.MinusExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMinusExpr(@NotNull MiniJavaParser.MinusExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBoolType(@NotNull MiniJavaParser.BoolTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -347,6 +359,18 @@ public class MiniJavaBaseListener implements MiniJavaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIfStat(@NotNull MiniJavaParser.IfStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNegExpr(@NotNull MiniJavaParser.NegExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNegExpr(@NotNull MiniJavaParser.NegExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

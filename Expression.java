@@ -10,23 +10,26 @@ public abstract class Expression implements Jasminable {
             this.rhs = r;
         }
         public String jasminify() {
+            String andLabel = LabelFactory.getNextAndLabel();
+            String endAndLabel = LabelFactory.getEndAndLabel();
+
             //Push LHS Expression and check
             String instruct = lhs.jasminify();
-            instruct += "\nifeq " + LabelFactory.getNextAndLabel();
+            instruct += "\nifeq " + andLabel;
 
             //Push RHS Expression and check
-            instruct += rhs.jasminify();
-            instruct += "\nifeq " + LabelFactory.getAndLabel();
+            instruct += "\n" + rhs.jasminify();
+            instruct += "\nifeq " + andLabel;
 
             //Neither are false, result is true
             instruct += "\niconst_1";
-            instruct += "\ngoto " + LabelFactory.getEndAndLabel();
+            instruct += "\ngoto " + endAndLabel;
 
             //If either are false, result is false
-            instruct += "\n" + LabelFactory.getAndLabel() + ":";
+            instruct += "\n" + andLabel + ":";
             instruct += "\niconst_0";
 
-            instruct += "\n" + LabelFactory.getEndAndLabel() + ":";
+            instruct += "\n" + endAndLabel + ":";
 
             return instruct;
         }
@@ -40,21 +43,24 @@ public abstract class Expression implements Jasminable {
             this.rhs = r;
         }
         public String jasminify() {
+            String ltLabel = LabelFactory.getNextLtLabel();
+            String endLtLabel = LabelFactory.getEndLtLabel();
+
             //Push LHS and RHS
             String instruct = lhs.jasminify();
             instruct += "\n" + rhs.jasminify();
 
             //If less than, branch
-            instruct += "\nif_icmplt " + LabelFactory.getNextLtLabel();
+            instruct += "\nif_icmplt " + ltLabel;
             //Else push false
             instruct += "\niconst_0";
-            instruct += "\ngoto " + LabelFactory.getEndLtLabel();
+            instruct += "\ngoto " + endLtLabel;
 
             //LHS < RHS
-            instruct += "\n" + LabelFactory.getLtLabel() + ":";
+            instruct += "\n" + ltLabel+ ":";
             instruct += "\niconst_1";
 
-            instruct += "\n" + LabelFactory.getEndLtLabel() + ":";
+            instruct += "\n" + endLtLabel + ":";
 
             return instruct;
         }
@@ -135,7 +141,6 @@ public abstract class Expression implements Jasminable {
         }
         public String jasminify() {
             String instruct = object.jasminify();
-            instruct += "\n";
             for (Expression e : parameters) {
                 instruct += "\n" + e.jasminify();
             }
@@ -154,14 +159,17 @@ public abstract class Expression implements Jasminable {
         }
 
         public String jasminify() {
-            String instruct = predicate.jasminify();
-            instruct += "\nifeq " + LabelFactory.getNextTernLabel();
-            instruct += "\n" + ifTrue.jasminify();
-            instruct += "\ngoto " + LabelFactory.getEndTernLabel();
+            String ternLabel = LabelFactory.getNextTernLabel();
+            String endTernLabel = LabelFactory.getEndTernLabel();
 
-            instruct += "\n" + LabelFactory.getTernLabel() + ":";
+            String instruct = predicate.jasminify();
+            instruct += "\nifeq " + ternLabel;
+            instruct += "\n" + ifTrue.jasminify();
+            instruct += "\ngoto " + endTernLabel;
+
+            instruct += "\n" + ternLabel+ ":";
             instruct += "\n" + ifFalse.jasminify();
-            instruct += "\n" + LabelFactory.getEndTernLabel() + ":";
+            instruct += "\n" + endTernLabel + ":";
 
             return instruct;
         }
@@ -220,7 +228,7 @@ public abstract class Expression implements Jasminable {
         private String jasminifyField() {
             String className = identifier.getClassBelongsTo().getName();
             String identifierName = identifier.getName();
-            String type = identifier.getType().getType();
+            String type = MJUtils.typeToJasminType(identifier.getType());
 
             String instruct = "aload_0\n";
             instruct += "getfield " + className + "/" + identifierName + " " + type;
@@ -228,7 +236,8 @@ public abstract class Expression implements Jasminable {
         }
         private String jasminifyLocal() {
             int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
-            String typeOf = identifier.getType().getType();
+            ValueType typeOf = identifier.getType();
+            System.out.println("JL: "+typeOf);
             if (typeOf.equals(ValueType.INT_TYPE)) {
                 return "iload "+localIndex;
             } else if (typeOf.equals(ValueType.BOOL_TYPE)) {
@@ -240,15 +249,15 @@ public abstract class Expression implements Jasminable {
     }
 
     public static class NewObjectExpression extends Expression {
-        Symbol object;
+        MJClass objectClass;
 
-        public NewObjectExpression(Symbol o) {
-            this.object = o;
+        public NewObjectExpression(MJClass o) {
+            this.objectClass = o;
         }
         public String jasminify() {
-            String instruct = "new " + object.getType().getType() + "\n";
+            String instruct = "new " + objectClass.getType().getType() + "\n";
             instruct += "dup\n";
-            instruct += "invokespecial " + object.getType().getType() + "/<init>()V";
+            instruct += "invokespecial " + objectClass.getType().getType() + "/<init>()V";
             return instruct;
         }
     }

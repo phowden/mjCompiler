@@ -31,12 +31,25 @@ public class TestRunner {
         ResolveVisitor r = new ResolveVisitor();
         r.resolve(tree);
 
+        if (MJUtils.error) { 
+            System.exit(-1);
+        }
+
         TypeCheckingVisitor t = new TypeCheckingVisitor(r.getMainClass());
         t.visit(tree);
 
-        System.out.println("\n");
-        t.printClasses();
+        if (MJUtils.error) {
+            System.exit(-1);
+        }
 
+        System.out.println("\n");
+        MainClass mainClass = t.getMainClass();
+
+        try {
+            mainClass.compile();
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
 
 	}
 }

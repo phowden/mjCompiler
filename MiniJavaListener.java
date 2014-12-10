@@ -90,17 +90,17 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitNewArrExpr(@NotNull MiniJavaParser.NewArrExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code plusMinusExpr}
+	 * Enter a parse tree produced by the {@code plusExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx);
+	void enterPlusExpr(@NotNull MiniJavaParser.PlusExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code plusMinusExpr}
+	 * Exit a parse tree produced by the {@code plusExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitPlusMinusExpr(@NotNull MiniJavaParser.PlusMinusExprContext ctx);
+	void exitPlusExpr(@NotNull MiniJavaParser.PlusExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiniJavaParser#classDecl}.
 	 * @param ctx the parse tree
@@ -216,18 +216,6 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code negateExpr}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterNegateExpr(@NotNull MiniJavaParser.NegateExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code negateExpr}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitNegateExpr(@NotNull MiniJavaParser.NegateExprContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code falseLitExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -239,6 +227,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFalseLitExpr(@NotNull MiniJavaParser.FalseLitExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code notExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterNotExpr(@NotNull MiniJavaParser.NotExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code notExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitNotExpr(@NotNull MiniJavaParser.NotExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code arrAccessExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -310,6 +310,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitWhileStat(@NotNull MiniJavaParser.WhileStatContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code minusExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMinusExpr(@NotNull MiniJavaParser.MinusExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code minusExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMinusExpr(@NotNull MiniJavaParser.MinusExprContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code boolType}
 	 * labeled alternative in {@link MiniJavaParser#type}.
 	 * @param ctx the parse tree
@@ -333,6 +345,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIfStat(@NotNull MiniJavaParser.IfStatContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code negExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterNegExpr(@NotNull MiniJavaParser.NegExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code negExpr}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitNegExpr(@NotNull MiniJavaParser.NegExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code thisExpr}
 	 * labeled alternative in {@link MiniJavaParser#expression}.

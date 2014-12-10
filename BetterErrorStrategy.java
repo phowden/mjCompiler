@@ -21,6 +21,7 @@ public class BetterErrorStrategy extends DefaultErrorStrategy {
         msg += "expected one of the following: " + expecting.toString(recognizer.getTokenNames());
 
         recognizer.notifyErrorListeners(t,msg,null);
+        MJUtils.markErrorOccured();
     }
 
     @Override
