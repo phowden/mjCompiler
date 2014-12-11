@@ -69,7 +69,7 @@ public class MJUtils {
         } else if (type.equals(ValueType.BOOL_TYPE)) {
             return "Z";
         } else {
-            return type.getType();
+            return "L"+type.getType()+";";
         }
     }
 }

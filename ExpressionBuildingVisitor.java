@@ -90,7 +90,7 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
         Expression object = visit(ctx.expression(OBJECT));
 
         //Do a bunch of ugly stuff to get method
-        TypeCheckingVisitor typeCheck = new TypeCheckingVisitor(mainClass,mjClass,method);
+        TypeCheckingVisitor typeCheck = new TypeCheckingVisitor(mainClass,mjClass,method,true);
         ValueType objectType = typeCheck.visit(ctx.expression(OBJECT));
         MJClass objectClass = mainClass.getClass(objectType.getType());
         Method methodToCall = objectClass.getMethod(ctx.IDENTIFIER().getText(),true);

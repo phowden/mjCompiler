@@ -19,11 +19,17 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     private Set<Symbol> initializedSymbols;
     private Set<Symbol> ifElseInitialized;
 
+    boolean ignoreErrors;
+
     public TypeCheckingVisitor(MainClass mc) {
-        this(mc,null,null);
+        this(mc,null,null,false);
     }
 
     public TypeCheckingVisitor(MainClass mc, MJClass mjc, Method m) {
+        this(mc,mjc,m,false);
+    }
+
+    public TypeCheckingVisitor(MainClass mc, MJClass mjc, Method m, boolean i) {
         this.mainClass = mc;
         this.currentMJClass = mjc;
         this.currentMethod = m;
@@ -33,6 +39,8 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
 
         this.initializedSymbols = new HashSet<Symbol>();
         this.ifElseInitialized = new HashSet<Symbol>();
+
+        this.ignoreErrors = i;
     }
 
     public MainClass getMainClass() {
@@ -55,6 +63,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     @Override public ValueType visitMethodDecl(@NotNull MiniJavaParser.MethodDeclContext ctx) {
         String methodName = ctx.IDENTIFIER(0).getText();
         currentMethod = currentMJClass.getMethod(methodName,false);
+        initializedSymbols = new HashSet<Symbol>();
         if (currentMJClass.getSuperClass() != null) {
             Method superMethod = currentMJClass.getSuperClass().getMethod(methodName,true);
             if (superMethod != null && MJUtils.isOverloading(currentMethod,superMethod))  {
@@ -143,7 +152,9 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
                 if (ifLevel > 0) {
                     ifElseInitialized.add(idSym);
                 } else if (whileLevel <= 0) {
+                    System.out.println("INITTING: "+idSym.getName());
                     initializedSymbols.add(idSym);
+                    System.out.println(initializedSymbols);
                 }
             }
         }
@@ -181,7 +192,6 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     }
 
     @Override public ValueType visitParenedExpr(@NotNull MiniJavaParser.ParenedExprContext ctx) {
-        System.out.println("PARENEXP");
         return visit(ctx.expression());
     }
 
@@ -189,24 +199,27 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
-        if (!lExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
-        } else if (!rExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+        if (!ignoreErrors) {
+            if (!lExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
+            } else if (!rExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+            }
         }
 
         return ValueType.INT_TYPE;
     }
 
     @Override public ValueType visitAndExpr(@NotNull MiniJavaParser.AndExprContext ctx) {
-        System.out.println("ANDEXP");
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
-        if (!lExprType.equals(ValueType.BOOL_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,lExprType);
-        } else if (!rExprType.equals(ValueType.BOOL_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,rExprType);
+        if (!ignoreErrors) {
+            if (!lExprType.equals(ValueType.BOOL_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,lExprType);
+            } else if (!rExprType.equals(ValueType.BOOL_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,rExprType);
+            }
         }
 
         return ValueType.BOOL_TYPE;
@@ -215,35 +228,39 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     @Override public ValueType visitNewArrExpr(@NotNull MiniJavaParser.NewArrExprContext ctx) {
         ValueType exprType = visit(ctx.expression());
 
-        if (!exprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,exprType);
+        if (!ignoreErrors) {
+            if (!exprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,exprType);
+            }
         }
 
         return ValueType.INT_ARR_TYPE;
     }
 
     @Override public ValueType visitPlusExpr(@NotNull MiniJavaParser.PlusExprContext ctx) {
-        System.out.println("PLUSEXP");
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
-        if (!lExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
-        } else if (!rExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+        if (!ignoreErrors) {
+            if (!lExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
+            } else if (!rExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+            }
         }
 
         return ValueType.INT_TYPE;
     }
     @Override public ValueType visitMinusExpr(@NotNull MiniJavaParser.MinusExprContext ctx) {
-        System.out.println("MINUSEXP");
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
-        if (!lExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
-        } else if (!rExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+        if (!ignoreErrors) {
+            if (!lExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
+            } else if (!rExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+            }
         }
 
         return ValueType.INT_TYPE;
@@ -252,8 +269,10 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     @Override public ValueType visitNotExpr(@NotNull MiniJavaParser.NotExprContext ctx) {
         ValueType exprType = visit(ctx.expression());
 
-        if (!exprType.equals(ValueType.BOOL_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,exprType);
+        if (!ignoreErrors) {
+            if (!exprType.equals(ValueType.BOOL_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,exprType);
+            }
         }
 
         return ValueType.BOOL_TYPE;
@@ -262,8 +281,10 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     @Override public ValueType visitNegExpr(@NotNull MiniJavaParser.NegExprContext ctx) {
         ValueType exprType = visit(ctx.expression());
 
-        if (!exprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,exprType);
+        if (!ignoreErrors) {
+            if (!exprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,exprType);
+            }
         }
 
         return ValueType.INT_TYPE;
@@ -273,26 +294,28 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
         ValueType arrExpr = visit(ctx.expression(0));
         ValueType indExpr = visit(ctx.expression(1));
 
-        if (!arrExpr.equals(ValueType.INT_ARR_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_ARR_TYPE,arrExpr);
-        }
-
-        if (!indExpr.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,indExpr);
+        if (!ignoreErrors) {
+            if (!arrExpr.equals(ValueType.INT_ARR_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_ARR_TYPE,arrExpr);
+            }
+            if (!indExpr.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,indExpr);
+            }
         }
 
         return ValueType.INT_TYPE;
     }
 
     @Override public ValueType visitLessThanExpr(@NotNull MiniJavaParser.LessThanExprContext ctx) {
-        System.out.println("LESSTHANEXP");
         ValueType lExprType = visit(ctx.expression(0));
         ValueType rExprType = visit(ctx.expression(1));
 
-        if (!lExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
-        } else if (!rExprType.equals(ValueType.INT_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+        if (!ignoreErrors) {
+            if (!lExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,lExprType);
+            } else if (!rExprType.equals(ValueType.INT_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.INT_TYPE,rExprType);
+            }
         }
 
         return ValueType.BOOL_TYPE;
@@ -301,15 +324,16 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
     @Override public ValueType visitArrLengthExpr(@NotNull MiniJavaParser.ArrLengthExprContext ctx) {
         ValueType exprType = visit(ctx.expression());
 
-        if (!exprType.equals(ValueType.INT_ARR_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,exprType);
+        if (!ignoreErrors) {
+            if (!exprType.equals(ValueType.INT_ARR_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,exprType);
+            }
         }
 
         return ValueType.INT_TYPE;
     }
 
     @Override public ValueType visitMethodCallExpr(@NotNull MiniJavaParser.MethodCallExprContext ctx) {
-        System.out.println("METHODCALLEXP "+ctx.IDENTIFIER().getText());
         ValueType objType = visit(ctx.expression(0));
         String methodName = ctx.IDENTIFIER().getText();
         List<ValueType> paramTypes = new ArrayList<>();
@@ -327,23 +351,25 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
 
         Method method = objClass.getMethod(methodName,true);
 
-        if (method == null) {
-            ErrorReporter.reportSymbolNotFound(ctx,methodName);
-            return ValueType.NULL_TYPE;
-        }
-
-        if (paramTypes.size() != method.getParams().size()) {
-            ErrorReporter.reportError(ctx,"Error on line %d: argument list of size %s, expected size %s",paramTypes.size()+"",method.getParams().size()+"");
-            return ValueType.NULL_TYPE;
-        }
-
-        List<Symbol> methodParams = method.getParams();
-        for (int i = 0; i < paramTypes.size(); ++i) {
-            ValueType foundType = paramTypes.get(i);
-            ValueType methType =  methodParams.get(i).getType();
-            if (!foundType.equals(methType)) {
-                ErrorReporter.reportTypeMismatch(ctx,methType,foundType);
+        if (!ignoreErrors) {
+            if (method == null) {
+                ErrorReporter.reportSymbolNotFound(ctx,methodName);
                 return ValueType.NULL_TYPE;
+            }
+
+            if (paramTypes.size() != method.getParams().size()) {
+                ErrorReporter.reportError(ctx,"Error on line %d: argument list of size %s, expected size %s",paramTypes.size()+"",method.getParams().size()+"");
+                return ValueType.NULL_TYPE;
+            }
+
+            List<Symbol> methodParams = method.getParams();
+            for (int i = 0; i < paramTypes.size(); ++i) {
+                ValueType foundType = paramTypes.get(i);
+                ValueType methType =  methodParams.get(i).getType();
+                if (!foundType.equals(methType)) {
+                    ErrorReporter.reportTypeMismatch(ctx,methType,foundType);
+                    return ValueType.NULL_TYPE;
+                }
             }
         }
 
@@ -355,12 +381,14 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
         ValueType expr2 = visit(ctx.expression(1));
         ValueType expr3 = visit(ctx.expression(2));
 
-        if (!expr1.equals(ValueType.BOOL_TYPE)) {
-            ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,expr1);
-        }
+        if (!ignoreErrors) {
+            if (!expr1.equals(ValueType.BOOL_TYPE)) {
+                ErrorReporter.reportTypeMismatch(ctx,ValueType.BOOL_TYPE,expr1);
+            }
 
-        if (!expr2.equals(expr3)) {
-            ErrorReporter.reportTypeMismatch(ctx,expr3,expr2);
+            if (!expr2.equals(expr3)) {
+                ErrorReporter.reportTypeMismatch(ctx,expr3,expr2);
+            }
         }
 
         return expr2;
@@ -371,22 +399,30 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
        new Object expression
      */
     @Override public ValueType visitIdExpr(@NotNull MiniJavaParser.IdExprContext ctx) {
-        System.out.println("ID "+ctx.IDENTIFIER().getText());
         String idName = ctx.IDENTIFIER().getText();
         Symbol idSym = MJUtils.findVariable(currentMJClass,currentMethod,idName);
         if (idSym == null) {
             ErrorReporter.reportSymbolNotFound(ctx,idName);
             return ValueType.NULL_TYPE;
         } else {
-            if (idSym.isLocal() && !currentMethod.getParams().contains(idSym)) {
-                System.out.println("LOCAL/NONPARAM: "+idSym.toLongString());
-                if (ifLevel > 0) {
-                    if (!initializedSymbols.contains(idSym) && !ifElseInitialized.contains(idSym)) {
-                        ErrorReporter.reportUsedBeforeInitialized(ctx,idName);
-                    }
-                } else {
-                    if (!initializedSymbols.contains(idSym)) {
-                        ErrorReporter.reportUsedBeforeInitialized(ctx,idName);
+            if (!ignoreErrors) {
+                if (idSym.isLocal() && !currentMethod.getParams().contains(idSym)) {
+                    if (ifLevel > 0) {
+                        if (!initializedSymbols.contains(idSym) && !ifElseInitialized.contains(idSym)) {
+                            System.out.println("IF");
+                            for (Symbol s: initializedSymbols) {
+                                System.out.println(s.toLongString());
+                            }
+                            ErrorReporter.reportUsedBeforeInitialized(ctx,idName);
+                        }
+                    } else {
+                        if (!initializedSymbols.contains(idSym)) {
+                            System.out.println("BASE");
+                            for (Symbol s: initializedSymbols) {
+                                System.out.println(s.toLongString());
+                            }
+                            ErrorReporter.reportUsedBeforeInitialized(ctx,idName);
+                        }
                     }
                 }
             }

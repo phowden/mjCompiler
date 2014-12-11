@@ -12,7 +12,7 @@ public abstract class Statement implements Jasminable {
         public String jasminify() {
             String instructions = "";
             for (Statement statement : statements) {
-                instructions += statement.jasminify();
+                instructions += "\n"+statement.jasminify();
             }
             return instructions;
         }
@@ -151,7 +151,7 @@ public abstract class Statement implements Jasminable {
                 instruct += "getfield " + className + "/" + identifierName + " [I";
             } else {
                 int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
-                instruct += "aload " + localIndex;
+                instruct += "\naload " + localIndex;
             }
 
             instruct += "\n" + index.jasminify();

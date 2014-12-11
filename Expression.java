@@ -237,7 +237,6 @@ public abstract class Expression implements Jasminable {
         private String jasminifyLocal() {
             int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
             ValueType typeOf = identifier.getType();
-            System.out.println("JL: "+typeOf);
             if (typeOf.equals(ValueType.INT_TYPE)) {
                 return "iload "+localIndex;
             } else if (typeOf.equals(ValueType.BOOL_TYPE)) {
@@ -275,7 +274,7 @@ public abstract class Expression implements Jasminable {
             this.value = v;
         }
         public String jasminify() {
-            return "sipush "+value;
+            return "ldc "+value;
         }
     }
 
