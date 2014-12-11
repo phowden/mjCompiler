@@ -15,11 +15,15 @@ public class LabelFactory {
     private static final String LT_BASE = "LT_";
     private static final String END_LT_BASE = "END_LT_";
 
+    private static final String NEG_BASE = "NEG_";
+    private static final String END_NEG_BASE = "END_NEG_";
+
     private static int ifNum = 0;
     private static int whileNum = 0;
     private static int ternNum = 0;
     private static int andNum = 0;
     private static int ltNum = 0;
+    private static int negNum = 0;
 
     private LabelFactory() { }
 
@@ -63,6 +67,14 @@ public class LabelFactory {
         return END_LT_BASE + ltNum;
     }
 
+    public static String getNegLabel() {
+        return NEG_BASE + negNum;
+    }
+
+    public static String getEndNegLabel() {
+        return END_NEG_BASE + negNum;
+    }
+
     public static String getNextIfLabel() {
         ++ifNum;
         return getIfLabel();
@@ -86,5 +98,10 @@ public class LabelFactory {
     public static String getNextLtLabel() {
         ++ltNum;
         return getLtLabel();
+    }
+
+    public static String getNextNegLabel() {
+        ++negNum;
+        return getNegLabel();
     }
 }

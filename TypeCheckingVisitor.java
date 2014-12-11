@@ -152,9 +152,7 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
                 if (ifLevel > 0) {
                     ifElseInitialized.add(idSym);
                 } else if (whileLevel <= 0) {
-                    System.out.println("INITTING: "+idSym.getName());
                     initializedSymbols.add(idSym);
-                    System.out.println(initializedSymbols);
                 }
             }
         }
@@ -409,18 +407,10 @@ public class TypeCheckingVisitor extends MiniJavaBaseVisitor<ValueType> {
                 if (idSym.isLocal() && !currentMethod.getParams().contains(idSym)) {
                     if (ifLevel > 0) {
                         if (!initializedSymbols.contains(idSym) && !ifElseInitialized.contains(idSym)) {
-                            System.out.println("IF");
-                            for (Symbol s: initializedSymbols) {
-                                System.out.println(s.toLongString());
-                            }
                             ErrorReporter.reportUsedBeforeInitialized(ctx,idName);
                         }
                     } else {
                         if (!initializedSymbols.contains(idSym)) {
-                            System.out.println("BASE");
-                            for (Symbol s: initializedSymbols) {
-                                System.out.println(s.toLongString());
-                            }
                             ErrorReporter.reportUsedBeforeInitialized(ctx,idName);
                         }
                     }

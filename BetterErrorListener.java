@@ -26,6 +26,7 @@ public class BetterErrorListener extends BaseErrorListener {
 			for (int i=start; i<=stop; i++) System.err.print("^");
 		}
 		System.err.println();
+        MJUtils.markErrorOccured();
 	}
 }
 

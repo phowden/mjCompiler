@@ -28,6 +28,10 @@ public class TestRunner {
 
 		ParseTree tree = parser.goal();
 
+        if (MJUtils.error) {
+            System.exit(-1);
+        }
+
         ResolveVisitor r = new ResolveVisitor();
         r.resolve(tree);
 

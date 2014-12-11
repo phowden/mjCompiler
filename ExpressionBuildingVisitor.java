@@ -62,7 +62,7 @@ public class ExpressionBuildingVisitor extends MiniJavaBaseVisitor<Expression> {
     }
 
     @Override public Expression visitNotExpr(@NotNull MiniJavaParser.NotExprContext ctx) {
-        return new Expression.NegateExpression(visit(ctx.expression()));
+        return new Expression.NotExpression(visit(ctx.expression()));
     }
 
     @Override public Expression visitArrAccessExpr(@NotNull MiniJavaParser.ArrAccessExprContext ctx) {

@@ -111,7 +111,7 @@ public abstract class Expression implements Jasminable {
             String instruct = array.jasminify();
             instruct += "\n";
             instruct += index.jasminify();
-            instruct += "\narraylength";
+            instruct += "\niaload";
             return instruct;
         }
     }
@@ -197,6 +197,27 @@ public abstract class Expression implements Jasminable {
         public String jasminify() {
             String instruct = expression.jasminify();
             instruct += "\nineg";
+            return instruct;
+        }
+    }
+
+    public static class NotExpression extends Expression {
+        Expression expression;
+
+        public NotExpression(Expression e) {
+            this.expression = e;
+        }
+        public String jasminify() {
+            String negLabel = LabelFactory.getNextNegLabel();
+            String endNegLabel = LabelFactory.getEndNegLabel();
+
+            String instruct = expression.jasminify();
+            instruct += "\nifeq " + negLabel;
+            instruct += "\niconst_0";
+            instruct += "\ngoto " + endNegLabel;
+            instruct += "\n" + negLabel + ":";
+            instruct += "\niconst_1";
+            instruct += "\n" + endNegLabel + ":";
             return instruct;
         }
     }

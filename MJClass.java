@@ -125,7 +125,11 @@ public class MJClass implements Jasminable {
         //Standard constructor
         jasmin += "\n.method public <init>()V";
         jasmin += "\naload_0";
-        jasmin += "\ninvokenonvirtual java/lang/Object/<init>()V";
+        if (superClass == null) {
+            jasmin += "\ninvokenonvirtual java/lang/Object/<init>()V";
+        } else {
+            jasmin += "\ninvokespecial " + superClass.getName() + "/<init>()V";
+        }
         jasmin += "\nreturn";
         jasmin += "\n.end method";
 

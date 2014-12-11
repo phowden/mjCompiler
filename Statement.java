@@ -148,7 +148,7 @@ public abstract class Statement implements Jasminable {
                 String type = identifier.getType().getType();
 
                 instruct += "\naload_0";
-                instruct += "getfield " + className + "/" + identifierName + " [I";
+                instruct += "\ngetfield " + className + "/" + identifierName + " [I";
             } else {
                 int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
                 instruct += "\naload " + localIndex;
