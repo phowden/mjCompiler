@@ -1,7 +1,9 @@
 import java.util.List;
 
+/** Representation of Statement productions from the MiniJava grammar **/
 public abstract class Statement implements Jasminable {
 
+    /** Representation of scoped statements **/
     public static class ScopedStatement extends Statement {
         List<Statement> statements;
 
@@ -18,6 +20,7 @@ public abstract class Statement implements Jasminable {
         }
     }
 
+    /** Representation of if/else statements **/
     public static class IfStatement extends Statement {
         Expression predicate;
         Statement ifTrue, ifFalse;
@@ -46,6 +49,7 @@ public abstract class Statement implements Jasminable {
         }
     }
 
+    /** Representation of while statements **/
     public static class WhileStatement extends Statement {
         Expression predicate;
         Statement body;
@@ -73,6 +77,7 @@ public abstract class Statement implements Jasminable {
         }
     }
 
+    /** Representation of print statements **/
     public static class PrintlnStatement extends Statement {
         Expression expression;
 
@@ -88,6 +93,7 @@ public abstract class Statement implements Jasminable {
         }
     }
 
+    /** Representation of assignment statements **/
     public static class AssignmentStatement extends Statement {
         Symbol identifier;
         Expression value;
@@ -105,6 +111,7 @@ public abstract class Statement implements Jasminable {
             }
         }
 
+        /** Turns representation of a field assignment into jasmin jvm instructions **/
         private String jasminifyFieldAssign() {
             String type = MJUtils.typeToJasminType(identifier.getType());
             String className = identifier.getClassBelongsTo().getName();
@@ -115,6 +122,7 @@ public abstract class Statement implements Jasminable {
             return instruct;
         }
 
+        /** Turns representation of a local variable assignment into jasmin jvm instructions **/
         private String jasminifyLocalAssign() {
             String instruct = value.jasminify();
             int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
@@ -130,6 +138,7 @@ public abstract class Statement implements Jasminable {
         }
     }
 
+    /** Representation of assignment to array indexes **/
     public static class ArrayAssignmentStatement extends Statement {
         Symbol identifier;
         Expression index, value;
@@ -142,6 +151,7 @@ public abstract class Statement implements Jasminable {
 
         public String jasminify() {
             String instruct = "";
+            //Get the array reference onto the stack
             if (identifier.isField()) {
                 String className = identifier.getClassBelongsTo().getName();
                 String identifierName = identifier.getName();
@@ -154,8 +164,10 @@ public abstract class Statement implements Jasminable {
                 instruct += "\naload " + localIndex;
             }
 
+            //Load the index and value expressions onto the stack
             instruct += "\n" + index.jasminify();
             instruct += "\n" + value.jasminify();
+            //Store
             instruct += "\niastore";
             return instruct;
         }

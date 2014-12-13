@@ -1,3 +1,4 @@
+/** Represents a type **/
 public class ValueType {
 
     public static final ValueType INT_TYPE = new ValueType("int");

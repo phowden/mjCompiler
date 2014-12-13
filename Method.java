@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.ArrayList;
 
+/** Representation of a MiniJava method.
+ **/
 public class Method implements Jasminable {
 
     private String name;
@@ -63,6 +65,9 @@ public class Method implements Jasminable {
         return null;
     }
 
+    /** Returns the index of the given symbol in the 
+      locals list
+      **/
     public int indexOfVariable(String symbolName) {
         return variables.indexOf(getVariable(symbolName));
     }
@@ -88,17 +93,24 @@ public class Method implements Jasminable {
         return msg;
     }
 
+    /** Returns this method's representation as a jasmin method-spec **/
     public String toJasmin() {
+        //Fully qualified method name: class/Belongs/To/method
         String jasmin = classBelongsTo.getName() + "/" + name;
+        //Parameter list as jasmin types
         jasmin += "(";
         for (Symbol param : params) {
             jasmin += MJUtils.symbolToJasminType(param);
         }
         jasmin += ")";
+        //Return type as jasmin type
         jasmin += MJUtils.typeToJasminType(returnType);
         return jasmin;
     }
 
+    /** Returns this method's representation for use as a jasmin method
+      declaration header
+     **/
     public String toJasminHeader() {
         String jasmin = name + "(";
         for (Symbol param : params) {
@@ -109,16 +121,19 @@ public class Method implements Jasminable {
         return jasmin;
     }
 
+    /** Adds parameters to local variables list **/
     private void addParams() {
         //Add "this" to the method
         Symbol thisSymbol = new Symbol("this",classBelongsTo.getType(),classBelongsTo);
         variables.add(thisSymbol);
+        //Add params to variables and convert params to locals of this method
         List<Symbol> tempParams = new ArrayList<>();
         for(Symbol param : params) {
             Symbol paramLocal = new Symbol(param.getName(),param.getType(),param.getClassBelongsTo(),this);
             tempParams.add(paramLocal);
             variables.add(paramLocal);
         }
+        //Store new params
         this.params = tempParams;
     }
 

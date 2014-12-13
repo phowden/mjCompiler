@@ -1,6 +1,10 @@
 import java.util.Set;
 import java.util.HashSet;
 
+/** Representation of a MiniJava class. Implements
+  jasminable to allow compilation into jasmin jvm 
+  instructions.
+ **/
 public class MJClass implements Jasminable {
 
     private MJClass superClass;
@@ -8,6 +12,10 @@ public class MJClass implements Jasminable {
     private Set<Symbol> fields;
     private Set<Method> methods;
     private ValueType type;
+
+    public MJClass(String n) {
+        this(null,n);
+    }
 
     public MJClass(MJClass s, String n) {
         this.superClass = s;
@@ -19,10 +27,6 @@ public class MJClass implements Jasminable {
         } else {
             this.type = new ValueType(name);
         }
-    }
-
-    public MJClass(String n) {
-        this(null,n);
     }
 
     public void setSuperClass(MJClass s) {
@@ -58,6 +62,14 @@ public class MJClass implements Jasminable {
         return this.fields;
     }
 
+    public Set<Method> getMethods() {
+        return this.methods;
+    }
+
+    public void removeMethod(Method removeMe) {
+        this.methods.remove(removeMe);
+    }
+    
     public Symbol getField(String symbolName) {
         for (Symbol sym : fields) {
             if (sym.getName().equals(symbolName)) {
@@ -68,14 +80,6 @@ public class MJClass implements Jasminable {
             return superClass.getField(symbolName);
         }
         return null;
-    }
-
-    public void removeMethod(Method removeMe) {
-        this.methods.remove(removeMe);
-    }
-
-    public Set<Method> getMethods() {
-        return this.methods;
     }
 
     public Method getMethod(String methodName, boolean checkSupers) {
@@ -91,7 +95,6 @@ public class MJClass implements Jasminable {
     }
 
     public String toString() {
-        //TODO Include other parts of the class (10/30)
         String msg = "class " + this.name;
         if (this.superClass != null) {
             msg += " extends " + this.superClass.getName();

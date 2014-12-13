@@ -1,7 +1,14 @@
 import java.util.List;
 
+/**
+  Internal representation of expressions with a one-to-one relation
+  to expression productions in the grammar. Specific expressions
+  are sublcasses of Expression.
+  Implements jasminable to enable transformation to jasmin code
+ **/
 public abstract class Expression implements Jasminable {
 
+    /** Representation of && Expressions **/
     public static class AndExpression extends Expression {
         Expression lhs, rhs;
 
@@ -9,7 +16,9 @@ public abstract class Expression implements Jasminable {
             this.lhs = l;
             this.rhs = r;
         }
+
         public String jasminify() {
+            //Branching labels
             String andLabel = LabelFactory.getNextAndLabel();
             String endAndLabel = LabelFactory.getEndAndLabel();
 
@@ -35,6 +44,7 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of < Expressions **/
     public static class LessThanExpression extends Expression {
         Expression lhs, rhs;
 
@@ -42,7 +52,9 @@ public abstract class Expression implements Jasminable {
             this.lhs = l;
             this.rhs = r;
         }
+
         public String jasminify() {
+            //Branching labels
             String ltLabel = LabelFactory.getNextLtLabel();
             String endLtLabel = LabelFactory.getEndLtLabel();
 
@@ -66,6 +78,7 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of +/- Expressions **/
     public static class PlusMinusExpression extends Expression {
         Expression lhs, rhs;
         String plusMinusInstruct;
@@ -75,6 +88,7 @@ public abstract class Expression implements Jasminable {
             this.rhs = r;
             this.plusMinusInstruct = (plus) ? "iadd" : "isub";
         }
+
         public String jasminify() {
             String instruct = lhs.jasminify();
             instruct += "\n";
@@ -84,6 +98,7 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of * Expressions **/
     public static class MultiplyExpression extends Expression {
         Expression lhs, rhs;
 
@@ -91,6 +106,7 @@ public abstract class Expression implements Jasminable {
             this.lhs = l;
             this.rhs = r;
         }
+
         public String jasminify() {
             String instruct = lhs.jasminify();
             instruct += "\n";
@@ -100,6 +116,7 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of arr[] access expressions **/
     public static class ArrayAccessExpression extends Expression {
         Expression array, index;
 
@@ -107,6 +124,7 @@ public abstract class Expression implements Jasminable {
             this.array = a;
             this.index = i;
         }
+
         public String jasminify() {
             String instruct = array.jasminify();
             instruct += "\n";
@@ -116,12 +134,14 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of array length expressions **/
     public static class ArrayLengthExpression extends Expression {
         Expression array;
 
         public ArrayLengthExpression(Expression a) {
             this.array = a;
         }
+
         public String jasminify() {
             String instruct = array.jasminify();
             instruct += "\narraylength";
@@ -129,6 +149,7 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of method call expressions **/
     public static class MethodCallExpression extends Expression {
         Expression object;
         Method method;
@@ -139,6 +160,7 @@ public abstract class Expression implements Jasminable {
             this.method= m;
             this.parameters = p;
         }
+
         public String jasminify() {
             String instruct = object.jasminify();
             for (Expression e : parameters) {
@@ -149,6 +171,7 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of ternary expressions **/
     public static class TernaryExpression extends Expression {
         Expression predicate, ifTrue, ifFalse;
 
@@ -159,14 +182,17 @@ public abstract class Expression implements Jasminable {
         }
 
         public String jasminify() {
+            //Branching labels
             String ternLabel = LabelFactory.getNextTernLabel();
             String endTernLabel = LabelFactory.getEndTernLabel();
 
+            //If the predicate is false, branch to false statement
             String instruct = predicate.jasminify();
             instruct += "\nifeq " + ternLabel;
             instruct += "\n" + ifTrue.jasminify();
             instruct += "\ngoto " + endTernLabel;
 
+            //False label and end label
             instruct += "\n" + ternLabel+ ":";
             instruct += "\n" + ifFalse.jasminify();
             instruct += "\n" + endTernLabel + ":";
@@ -175,12 +201,14 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of creating new array expressions **/
     public static class NewArrayExpression extends Expression {
         Expression size;
 
         public NewArrayExpression(Expression s) {
             this.size = s;
         }
+
         public String jasminify() {
             String instruct = size.jasminify();
             instruct += "\nnewarray int";
@@ -188,12 +216,14 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of arithmetic negation expressions **/
     public static class NegateExpression extends Expression {
         Expression expression;
 
         public NegateExpression(Expression e) {
             this.expression = e;
         }
+
         public String jasminify() {
             String instruct = expression.jasminify();
             instruct += "\nineg";
@@ -201,20 +231,27 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of boolean not expressions **/
     public static class NotExpression extends Expression {
         Expression expression;
 
         public NotExpression(Expression e) {
             this.expression = e;
         }
+
         public String jasminify() {
+            //Branching labels
             String negLabel = LabelFactory.getNextNegLabel();
             String endNegLabel = LabelFactory.getEndNegLabel();
 
+            //If the predicate is false, branch and push true
             String instruct = expression.jasminify();
             instruct += "\nifeq " + negLabel;
+            //Else fall through and push false
             instruct += "\niconst_0";
             instruct += "\ngoto " + endNegLabel;
+
+            //If true label and end label
             instruct += "\n" + negLabel + ":";
             instruct += "\niconst_1";
             instruct += "\n" + endNegLabel + ":";
@@ -222,27 +259,33 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of expressions inside of parentheses **/
     public static class ParenthesesExpression extends Expression {
         Expression expression;
 
         public ParenthesesExpression(Expression e) {
             this.expression = e;
         }
+
         public String jasminify() {
             return expression.jasminify();
         }
     }
 
+    /** Representation of identifiers in expressions **/
     public static class IdentifierExpression extends Expression {
         Symbol identifier;
 
         public IdentifierExpression(Symbol i) {
             this.identifier = i;
         }
+
         public String jasminify() {
+            //Load field
             if (identifier.isField()) {
                 return jasminifyField();
             } else {
+                //Load local
                 return jasminifyLocal();
             }
         }
@@ -251,29 +294,36 @@ public abstract class Expression implements Jasminable {
             String identifierName = identifier.getName();
             String type = MJUtils.typeToJasminType(identifier.getType());
 
+            //Load this
             String instruct = "aload_0\n";
+            //Get the desired field
             instruct += "getfield " + className + "/" + identifierName + " " + type;
             return instruct;
         }
         private String jasminifyLocal() {
+            //Get index within local variables
             int localIndex = identifier.getMethodBelongsTo().indexOfVariable(identifier.getName());
             ValueType typeOf = identifier.getType();
-            if (typeOf.equals(ValueType.INT_TYPE)) {
+
+            //Use the properly typed load
+            if (typeOf.equals(ValueType.INT_TYPE)) { //integer
                 return "iload "+localIndex;
-            } else if (typeOf.equals(ValueType.BOOL_TYPE)) {
+            } else if (typeOf.equals(ValueType.BOOL_TYPE)) { //boolean
                 return "iload "+localIndex;
-            } else {
+            } else { //object or array
                 return "aload "+localIndex;
             }
         }
     }
 
+    /** Representation of creating a new instance of an object **/
     public static class NewObjectExpression extends Expression {
         MJClass objectClass;
 
         public NewObjectExpression(MJClass o) {
             this.objectClass = o;
         }
+
         public String jasminify() {
             String instruct = "new " + objectClass.getType().getType() + "\n";
             instruct += "dup\n";
@@ -282,29 +332,34 @@ public abstract class Expression implements Jasminable {
         }
     }
 
+    /** Representation of 'this' expressions **/
     public static class ThisExpression extends Expression {
         public String jasminify() {
             return "aload_0";
         }
     }
 
+    /** Representation of integer literals in expressions **/
     public static class IntegerLiteralExpression extends Expression {
         int value;
 
         public IntegerLiteralExpression(int v) {
             this.value = v;
         }
+
         public String jasminify() {
             return "ldc "+value;
         }
     }
 
+    /** Representation of boolean true/false expressions **/
     public static class BooleanLiteralExpression extends Expression {
         boolean value;
 
         public BooleanLiteralExpression(boolean v) {
             this.value = v;
         }
+
         public String jasminify() {
             return "iconst_"+ (value ? 1 : 0);
         }

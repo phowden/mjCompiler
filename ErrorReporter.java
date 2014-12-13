@@ -1,6 +1,9 @@
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 
+/**
+  Utility class for reporting errors found during static semantics and type checking
+ **/
 public class ErrorReporter {
 
     public static final String OVERLOAD_METHOD = "Error on line %d: method '%s' is attempting to overload '%s'  \n";

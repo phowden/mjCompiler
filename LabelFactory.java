@@ -1,3 +1,9 @@
+/** 
+  Provides labels for the statement and expressions that utilize
+  branching. 
+  getNext* method return a new label with an incremented index;
+  get* method return the current label with the current index;
+ **/
 public class LabelFactory {
 
     private static final String IF_BASE = "IF_";

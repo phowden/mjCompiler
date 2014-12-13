@@ -1,3 +1,4 @@
+/** Representation of an identifier symbol **/
 public class Symbol {
 
     private String name;

@@ -1,6 +1,10 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Nullable;
 
+/**
+  Improves upon ANTLR's base error listener, prints the error and line number, then points
+  to the offending token in the line.
+ **/
 public class BetterErrorListener extends BaseErrorListener {
 
 	@Override

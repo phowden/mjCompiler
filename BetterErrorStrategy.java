@@ -3,6 +3,9 @@ import org.antlr.v4.runtime.misc.IntervalSet;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.*;
 
+/**
+  An improvement on ANTLR's default error strategy, prints errors in a more helpful and informative fashion
+ **/
 public class BetterErrorStrategy extends DefaultErrorStrategy {
 
     @Override
@@ -11,7 +14,6 @@ public class BetterErrorStrategy extends DefaultErrorStrategy {
         if (inErrorRecoveryMode(recognizer)) {
             return;
         }
-
         beginErrorCondition(recognizer);
 
         Token t = recognizer.getCurrentToken();
